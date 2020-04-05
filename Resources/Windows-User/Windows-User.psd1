@@ -1,0 +1,1 @@
+RootModule = 'Windows-User.schema.psm1'
