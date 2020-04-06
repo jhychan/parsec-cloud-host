@@ -31,7 +31,7 @@ Configuration ParsecSystem
         Force = $true
     }
 
-    # # Disable Windows Update Services
+    # # Disable Windows Automatic Updates
     Registry "Disable-AutomaticUpdates"
     {
         Ensure = 'Present'
