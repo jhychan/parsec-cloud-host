@@ -1,9 +1,13 @@
+#Requires -RunAsAdministrator
+#Requires -Version 5.1
+
 [CmdletBinding()]
 param()
 
 # Script basics
 $ScriptDir = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 $ScriptName = Split-Path -Leaf -Path $MyInvocation.MyCommand.Definition
+$ErrorActionPreference = 'Stop'
 
 # Force tls 1.2 only
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -25,9 +29,10 @@ $psModulePath += $ScriptDir
 $env:PSModulePath = ($psModulePath | Sort-Object | Get-Unique) -Join ';'
 
 # Set up dsc local configuration manager
+$lcmPath = Join-Path $env:ProgramData 'ParsecHost\Lcm'
 . .\ParsecHostLcm.ps1
-ParsecHostLcm -OutputPath 'C:\ParsecHostLcm'
-Set-DscLocalConfigurationManager -Path 'C:\ParsecHostLcm' -Force -Verbose
+ParsecHostLcm -OutputPath $lcmPath
+Set-DscLocalConfigurationManager -Path $lcmPath -Force -Verbose
 
 # Create dsc configuration and apply
 . .\ParsecHostDsc.ps1
@@ -40,9 +45,9 @@ $configData = @{
     )
 }
 $userCredential = Get-Credential -UserName 'parsec' -Message 'Account that will log onto this machine and run parsec (will be created if it does not exist):'
-ParsecHostDsc -ConfigurationData $configData -OutputPath 'C:\ParsecHostDsc' -ParsecUserCredential $userCredential
-# Test-DscConfiguration -Path 'C:\ParsecHostDsc'
-Start-DscConfiguration -Path 'C:\ParsecHostDsc' -Force -Wait
+$dscPath = Join-Path $env:ProgramData 'ParsecHost\Dsc'
+ParsecHostDsc -ConfigurationData $configData -OutputPath $dscPath -ParsecUserCredential $userCredential
+Start-DscConfiguration -Path $dscPath -Force -Wait
 
 # Prompt before restart
 Restart-Computer -Confirm:$true -Verbose
