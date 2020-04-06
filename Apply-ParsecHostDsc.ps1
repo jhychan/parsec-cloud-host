@@ -39,7 +39,7 @@ $configData = @{
         }
     )
 }
-$userCredential = Get-Credential -UserName 'parsec' -Message 'The account that will log onto this machine and run parsec:'
+$userCredential = Get-Credential -UserName 'parsec' -Message 'Account that will log onto this machine and run parsec (will be created if it does not exist):'
 ParsecHostDsc -ConfigurationData $configData -OutputPath 'C:\ParsecHostDsc' -ParsecUserCredential $userCredential
 # Test-DscConfiguration -Path 'C:\ParsecHostDsc'
 Start-DscConfiguration -Path 'C:\ParsecHostDsc' -Force -Wait
