@@ -5,11 +5,18 @@ param()
 $ScriptDir = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
 $ScriptName = Split-Path -Leaf -Path $MyInvocation.MyCommand.Definition
 
-# Update modules and psdscresources
-If(-not (Get-Module -Name PSDscResources -ListAvailable)) {
-    Install-PackageProvider -Name NuGet -Force
-    Install-Module -Name PowerShellGet -Force
-    Install-Module -Nam PSDscResources -Force
+# Force tls 1.2 only
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+# Install dependencies
+If(-not (Get-PackageProvider -ListAvailable -Name 'NuGet' -EA SilentlyContinue)) {
+    Install-PackageProvider -Name 'NuGet' -Force -Verbose | Out-Null
+}
+$requiredModules = 'PowerShellGet','PSDscResources','chocolatey'
+ForEach($moduleName in $requiredModules) {
+    If(-not (Get-Module -ListAvailable -Name $moduleName)) {
+        Install-Module -Name $moduleName -Force -Verbose | Out-Null
+    }
 }
 
 # Make parsec dsc resources available in current session
