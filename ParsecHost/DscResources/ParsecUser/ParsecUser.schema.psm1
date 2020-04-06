@@ -9,22 +9,22 @@ Configuration ParsecUser
     Import-DscResource -ModuleName 'PSDscResources'
 
     # Local user account running parsec
-    User "User-Parsec"
+    User "Account-User-Parsec"
     {
         Ensure = 'Present'
         UserName = $Credential.UserName
         Password = $Credential
     }
-    Group "Administrator-Parsec"
+    Group "Group-Admnistrator-Parsec"
     {
         Ensure= 'Present'
         GroupName='Administrators'
         MembersToInclude = $Credential.UserName
-        DependsOn = '[User]User-Parsec'
+        DependsOn = '[User]Account-User-Parsec'
     }
 
     # Disable IE Proxy
-    Registry "Disable-IE-Proxy"
+    Registry "IE-Proxy-Disabled"
     {
         Ensure = 'Present'
         Key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings'
@@ -32,12 +32,12 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]User-Parsec'
+        DependsOn = '[User]Account-User-Parsec'
         PsDscRunAsCredential = $Credential
     }
 
     # Force close processes on shutdown
-    Registry "Shutdown-Force-Kill-Processes"
+    Registry "Shutdown-Force-Kill-Processes-Enabled"
     {
         Ensure = 'Present'
         Key = 'HKCU:\Control Panel\Desktop'
@@ -45,12 +45,12 @@ Configuration ParsecUser
         ValueData = 1
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]User-Parsec'
+        DependsOn = '[User]Account-User-Parsec'
         PsDscRunAsCredential = $Credential
     }
     
     # Disable mouse acceleration
-    Registry "Disable-Mouse-Acceleration"
+    Registry "Mouse-Acceleration-Disabled"
     {
         Ensure = 'Present'
         Key = 'HKCU:\Control Panel\Mouse'
@@ -58,12 +58,12 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]User-Parsec'
+        DependsOn = '[User]Account-User-Parsec'
         PsDscRunAsCredential = $Credential
     }
 
     # Sensible explorer settings
-    Registry "Disable-Explorer-RecentFiles"
+    Registry "Explorer-HideRecentFiles"
     {
         Ensure = 'Present'
         Key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer'
@@ -71,10 +71,10 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]User-Parsec'
+        DependsOn = '[User]Account-User-Parsec'
         PsDscRunAsCredential = $Credential
     }
-    Registry "Disable-Explorer-FrequentFolders"
+    Registry "Explorer-HideFrequentFolders"
     {
         Ensure = 'Present'
         Key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer'
@@ -82,10 +82,10 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]User-Parsec'
+        DependsOn = '[User]Account-User-Parsec'
         PsDscRunAsCredential = $Credential
     }
-    Registry "Disable-Explorer-LaunchToQuickAccess"
+    Registry "Explorer-LaunchToQuickAccess-Disabled"
     {
         Ensure = 'Present'
         Key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
@@ -93,10 +93,10 @@ Configuration ParsecUser
         ValueData = 1
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]User-Parsec'
+        DependsOn = '[User]Account-User-Parsec'
         PsDscRunAsCredential = $Credential
     }
-    Registry "Enable-Explorer-ShowHidden"
+    Registry "Explorer-ShowHiddenItems"
     {
         Ensure = 'Present'
         Key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
@@ -104,10 +104,10 @@ Configuration ParsecUser
         ValueData = 1
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]User-Parsec'
+        DependsOn = '[User]Account-User-Parsec'
         PsDscRunAsCredential = $Credential
     }
-    Registry "Disable-Explorer-HideFileExtensions"
+    Registry "Explorer-ShowFileExtensions"
     {
         Ensure = 'Present'
         Key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
@@ -115,10 +115,10 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]User-Parsec'
+        DependsOn = '[User]Account-User-Parsec'
         PsDscRunAsCredential = $Credential
     }
-    Registry "Disable-Explorer-TaskbarTaskView"
+    Registry "Explorer-HideTaskbarTaskView"
     {
         Ensure = 'Present'
         Key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
@@ -126,10 +126,10 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]User-Parsec'
+        DependsOn = '[User]Account-User-Parsec'
         PsDscRunAsCredential = $Credential
     }
-    Registry "Disable-Explorer-TaskbarSearch"
+    Registry "Explorer-HideTaskbarSearch"
     {
         Ensure = 'Present'
         Key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
@@ -137,7 +137,7 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]User-Parsec'
+        DependsOn = '[User]Account-User-Parsec'
         PsDscRunAsCredential = $Credential
     }
 
@@ -174,7 +174,7 @@ Configuration ParsecUser
     }
 
     # Configure autologon
-    Registry "Enable-AutoLogon"
+    Registry "AutoLogon-Enabled"
     {
         Ensure = 'Present'
         Key = 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon'
@@ -182,9 +182,9 @@ Configuration ParsecUser
         ValueData = 1
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]User-Parsec'
+        DependsOn = '[User]Account-User-Parsec'
     }
-    Registry "Enable-AutoLogon-Domain"
+    Registry "AutoLogon-Domain"
     {
         Ensure = 'Present'
         Key = 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon'
@@ -192,9 +192,9 @@ Configuration ParsecUser
         ValueData = '.'
         ValueType = 'String'
         Force = $true
-        DependsOn = '[User]User-Parsec'
+        DependsOn = '[User]Account-User-Parsec'
     }
-    Registry "Enable-AutoLogon-Username"
+    Registry "AutoLogon-Username"
     {
         Ensure = 'Present'
         Key = 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon'
@@ -202,9 +202,9 @@ Configuration ParsecUser
         ValueData = $Credential.UserName
         ValueType = 'String'
         Force = $true
-        DependsOn = '[User]User-Parsec'
+        DependsOn = '[User]Account-User-Parsec'
     }
-    Registry "Enable-AutoLogon-Password"
+    Registry "AutoLogon-Password"
     {
         Ensure = 'Present'
         Key = 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon'
@@ -212,6 +212,6 @@ Configuration ParsecUser
         ValueData = $Credential.GetNetworkCredential().Password
         ValueType = 'String'
         Force = $true
-        DependsOn = '[User]User-Parsec'
+        DependsOn = '[User]Account-User-Parsec'
     }
 }

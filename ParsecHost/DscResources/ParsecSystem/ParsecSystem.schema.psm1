@@ -5,14 +5,14 @@ Configuration ParsecSystem
     Import-DscResource -ModuleName 'PSDscResources'
 
     # Required features built-in to Windows
-    WindowsFeatureSet "Install-WindowsFeatures"
+    WindowsFeatureSet "WindowsFeatures"
     {
         Ensure = 'Present'
         Name = 'NET-Framework-Core','NET-Framework-45-Core','Direct-Play'
     }
 
     # Disable Internet Explorer Enhanced Security Configuration
-    Registry "Disable-IE-ESC-Admin"
+    Registry "IE-ESC-Admin-Disabled"
     {
         Ensure = 'Present'
         Key = 'HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}'
@@ -21,7 +21,7 @@ Configuration ParsecSystem
         ValueType = 'Dword'
         Force = $true
     }
-    Registry "Disable-IE-ESC-User"
+    Registry "IE-ESC-User-Disabled"
     {
         Ensure = 'Present'
         Key = 'HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}'
@@ -32,7 +32,7 @@ Configuration ParsecSystem
     }
 
     # # Disable Windows Automatic Updates
-    Registry "Disable-AutomaticUpdates"
+    Registry "AutomaticUpdates-Disabled"
     {
         Ensure = 'Present'
         Key = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU'
@@ -43,7 +43,7 @@ Configuration ParsecSystem
     }
 
     # # Configure NTP
-    Registry "Enable-NTP"
+    Registry "NTP-Internet-Enabled"
     {
         Ensure = 'Present'
         Key = 'HKLM:\SYSTEM\CurrentControlSet\Services\W32Time\Parameters'
@@ -52,7 +52,7 @@ Configuration ParsecSystem
         ValueType = 'String'
         Force = $true
     }
-    Registry "Set-TimeZoneUpdate-Service-ManualTrigger"
+    Registry "TimeZoneAutomaticUpdate-Service-Enabled"
     {
         Ensure = 'Present'
         Key = 'HKLM:\SYSTEM\CurrentControlSet\Services\tzautoupdate'
@@ -63,7 +63,7 @@ Configuration ParsecSystem
     }
     
     # # Disable New Network UI
-    Registry "Disable-NewNetwork-GUI"
+    Registry "NewNetworkWindow-Disabled"
     {
         Ensure = 'Present'
         Key = 'HKLM:\SYSTEM\CurrentControlSet\Control\Network\NewNetworkWindowOff'
@@ -72,7 +72,7 @@ Configuration ParsecSystem
     }
     
     # # Disable Server Manager at login
-    Registry "Disable-ServerManager-Startup"
+    Registry "ServerManager-Startup-Disabled"
     {
         Ensure = 'Present'
         Key = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Server\ServerManager'
@@ -83,7 +83,7 @@ Configuration ParsecSystem
     }
 
     # # Disable lockscreen
-    Registry "Disable-Lockscreen"
+    Registry "Lockscreen-Disabled"
     {
         Ensure = 'Present'
         Key = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System'
@@ -94,7 +94,7 @@ Configuration ParsecSystem
     }
 
     # # Disable recently installed items in start menu
-    Registry "Disable-StartMenu-RecentlyInstalled"
+    Registry "StartMenu-RecentlyInstalled-Disabled"
     {
         Ensure = 'Present'
         Key = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer'
