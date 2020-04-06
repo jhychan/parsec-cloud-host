@@ -4,9 +4,7 @@
 [CmdletBinding()]
 param()
 
-# Script basics
-$ScriptDir = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
-$ScriptName = Split-Path -Leaf -Path $MyInvocation.MyCommand.Definition
+# Script flow control
 $ErrorActionPreference = 'Stop'
 
 # Force tls 1.2 only
@@ -25,14 +23,14 @@ ForEach($moduleName in $requiredModules) {
 
 # Make parsec dsc resources available in current session
 $psModulePath = $env:PSModulePath -split ';'
-$psModulePath += $ScriptDir
+$psModulePath += $PSScriptRoot
 $env:PSModulePath = ($psModulePath | Sort-Object | Get-Unique) -Join ';'
 
 # Set up dsc local configuration manager
 $lcmPath = Join-Path $env:ProgramData 'ParsecHost\Lcm'
 . .\ParsecHostLcm.ps1
 ParsecHostLcm -OutputPath $lcmPath
-Set-DscLocalConfigurationManager -Path $lcmPath -Force -Verbose
+Set-DscLocalConfigurationManager -Path $lcmPath -Force
 
 # Create dsc configuration and apply
 . .\ParsecHostDsc.ps1
