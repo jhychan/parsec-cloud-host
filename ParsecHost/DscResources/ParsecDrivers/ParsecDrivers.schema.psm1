@@ -12,13 +12,21 @@ Configuration ParsecDrivers
         Version = 'Latest'
     }
 
+    # Audio driver - https://www.vb-audio.com/Cable
+    ChocolateyPackage 'VBCable'
+    {
+        Ensure = 'Present'
+        Name = 'vb-cable'
+        Version = 'Latest'
+    }
+
     # Nvidia driver
     $gpu = Get-SupportedGpu
     If($gpu) {
         $cloudProvider = Get-CloudProvider
         $smi = Join-Path $env:ProgramFiles 'NVIDIA Corporation\NVSMI\nvidia-smi.exe'
         If(-not (Test-Path $smi)) {
-            # $installerPath = Get-GpuDriver -Provider $cloudProvider -Vendor $gpu.Vendor -Device $gpu.Device -ErrorAction 'Stop'
+            $installerPath = Get-GpuDriver -Provider $cloudProvider -Vendor $gpu.Vendor -Device $gpu.Device -ErrorAction 'Stop'
             If($installerPath) {
                 Script 'GpuDriver'
                 {
