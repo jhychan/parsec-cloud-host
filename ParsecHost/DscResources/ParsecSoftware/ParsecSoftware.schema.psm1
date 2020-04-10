@@ -94,6 +94,7 @@ Configuration ParsecSoftware
     {
         Ensure = 'Present'
         Path = $parsecFilePath
+        Arguments = ''
         Credential = $Credential
     }
 
