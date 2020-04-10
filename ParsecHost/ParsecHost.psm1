@@ -1,7 +1,7 @@
 Function Test-CloudProvider {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory=$true,ValueFromPipeline=$true)]
         [ValidateSet('AWS','Azure','GCP','Paperspace')]
         [String]$Provider,
 
@@ -51,7 +51,12 @@ Function Get-CloudProvider {
     [CmdletBinding()]
     param([Switch]$Force)
     $providerSet = (Get-Command -Name 'Test-CloudProvider').Parameters.Provider.Attributes.ValidValues
-    $providerSet | Where-Object { Test-CloudProvider -Provider $_ @PSBoundParameters }
+    $result = $providerSet | Where-Object { Test-CloudProvider -Provider $_ @PSBoundParameters }
+    if($result) {
+        return $result
+    } Else {
+        return 'Other'
+    }
 }
 
 Function Get-SupportedGpu {
@@ -66,7 +71,7 @@ Function Get-SupportedGpu {
     }
     $detectedGpus = Get-CimInstance @cimInstArgs
 
-    $foundGpus = @()
+    $foundGpu = @()
     ForEach($gpu in $detectedGpus) {
         If($gpu -match 'PCI\\VEN_(.{4})&DEV_(.{4})') {
             $vendor = $matches[1]
@@ -74,26 +79,25 @@ Function Get-SupportedGpu {
             If($supportedGpus.$vendor.$device) {
                 $supportedGpus.$vendor.$device.Vendor = $vendor
                 $supportedGpus.$vendor.$device.Device = $device
-                $foundGpus = New-Object -Type PSObject -Property $supportedGpus.$vendor.$device
+                $foundGpu = New-Object -Type PSObject -Property $supportedGpus.$vendor.$device
             }
         }
     }
 
-    If ($foundGpus.Count -eq 0) {
-        throw 'No supported GPUs found'
-    } ElseIf ($foundGpus.Count -gt 1) {
-        throw 'Multiple GPUs found - this configuration only supports 1 GPU'
+    If ($foundGpu.Count -eq 0) {
+        Write-Warning 'No supported GPUs found'
+    } ElseIf ($foundGpu.Count -gt 1) {
+        Write-Warning 'Multiple GPUs found - this configuration only supports 1 GPU'
     } Else {
-        return $foundGpus
+        return $foundGpu
     }
 }
-
 
 Function Get-GpuDriver {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory=$true)]
-        [ValidateSet('AWS','Azure','GCP','Paperspace')]
+        [ValidateSet('AWS','Azure','GCP','Paperspace','Other')]
         [String]$Provider,
 
         [Parameter(Mandatory=$true)]
@@ -114,17 +118,18 @@ Function Get-GpuDriver {
     switch ($driverKey) {
         'Azure' {
             # https://docs.microsoft.com/en-us/azure/virtual-machines/extensions/hpccompute-gpu-windows
-            Write-Verbose 'Azure VMs should use the NVIDIA GPU Driver Extension for Windows'
+            Write-Warning 'Azure VMs should use the NVIDIA GPU Driver Extension for Windows'
         }
         'AWS' {
             $api = 'https://ec2-windows-nvidia-drivers.s3.amazonaws.com'
-            $xml = [Xml](Invoke-WebRequest -Uri $api -UseBasicParsing).Content
+            $xml = [Xml](Invoke-WebRequest -UseBasicParsing -Uri $api).Content
             $driverList = $xml.ListBucketResult.Contents.Key | Sort
             $latestDriverPath = $driverList | ? { $_ -match '^latest.*win10_server2016_server2019_64bit_international\.exe$' }
             $downloadUri = "$api/$latestDriverPath"
             $downloadUri | Out-String | Write-Verbose
             $downloadPath = Join-Path $env:Temp 'GPUDriver.exe'
-            Invoke-WebRequest -UseBasicParsing -Uri $downloadUri -OutFile $downloadPath
+            # Invoke-WebRequest -UseBasicParsing -Uri $downloadUri -OutFile $downloadPath
+            [System.Net.WebClient]::new().DownloadFile($downloadUri, $downloadPath)
             return $downloadPath
         }
         'AWS-G4' {
@@ -150,7 +155,7 @@ Function Get-GpuDriver {
         }
         'GCP' {
             $api = 'https://storage.googleapis.com/nvidia-drivers-us-public'
-            $xml = [Xml](Invoke-WebRequest -Uri $api -UseBasicParsing).Content
+            $xml = [Xml](Invoke-WebRequest -UseBasicParsing -Uri $api).Content
             $driverList = $xml.ListBucketResult.Contents.Key | Sort
             $winDriverList = $driverList | ? { $_ -match '^.*win10_server2016_server2019_64bit_international\.exe$' }
             $orderedWinDriverList = $winDriverList | % { $_.Split('/')[-1] } | Sort
@@ -160,7 +165,8 @@ Function Get-GpuDriver {
             $downloadUri = "$api/$latestDriverPath"
             $downloadUri | Out-String | Write-Verbose
             $downloadPath = Join-Path $env:Temp 'GPUDriver.exe'
-            Invoke-WebRequest -UseBasicParsing -Uri $downloadUri -OutFile $downloadPath
+            # Invoke-WebRequest -UseBasicParsing -Uri $downloadUri -OutFile $downloadPath
+            [System.Net.WebClient]::new().DownloadFile($downloadUri, $downloadPath)
             return $downloadPath
         }
         'Nvidia' {
@@ -171,27 +177,33 @@ Function Get-GpuDriver {
                 default { throw "This is an unsupported OS: $osName" }
             }
             $api = "https://www.nvidia.com/Download/processFind.aspx?psid=$($gpuInfo.PSID)&pfid=$($gpuInfo.PFID)&osid=$osId&lid=1&whql=1&lang=en-us&ctk=0"
-            $html = Invoke-WebRequest -Uri $api
-            $cells = $html.ParsedHtml.documentElement.getElementsByClassName('gridItem')
-            $rowCount = $cells.length
+            $html = Invoke-WebRequest -UseBasicParsing -Uri $api
+            $rowMatches = $html.Content | select-string -AllMatches '(?smi)<tr id="driverList">(.+?)</tr>' | Select -ExpandProperty 'Matches'
             $driverInfo = @()
-            ForEach($i in ((0..(($cells.length / 6)-1)) | % { 6*$_ })) {
-                $driverProp = @{
-                    Name = $cells[($i+1)].innerText
-                    Download = $cells[($i+1)].firstChild.firstChild.href -replace 'about:','https:'
-                    Version = $cells[($i+2)].innerText
-                    Date = $cells[($i+3)].innerText
-                }
+            ForEach($row in $rowMatches) {
+                $cellMatches = $row.Value | Select-String -AllMatches '(?smi)<td class="gridItem.*?".*?>(.+?)</td>' | select -ExpandProperty Matches
+                $cellDriver = $cellMatches[1].Value
+                $cellDriver -match "<td class=`"gridItem driverName`">.*?<a href='(.+?)'>(.+?)</a>" | Out-Null
+                $driverProp = @{}
+                $driverProp.Name = $matches[2]
+                $driverProp.Download = 'https:' + $matches[1]
+                $cellVersion = $cellMatches[2].Value
+                $cellVersion -match '<td class="gridItem">(.+?)</td>' | Out-Null
+                $driverProp.Version = $matches[1]
                 $driverInfo += New-Object -TypeName PSObject -Property $driverProp
             }
-            $downloadUri = $driverInfo[0].Download
-            $downloadUri | Out-String | Write-Verbose
+            $downloadPageUri = $driverInfo | Sort Version | Select -Last 1 | Select -ExpandProperty Download
+            $downloadPageUri | Out-String | Write-Verbose
+            $downloadPage = Invoke-WebRequest -UseBasicParsing -Uri $downloadPageUri
+            $downloadHref = $downloadPage.Links.href | ? { $_ -match 'DriverDownload' }
+            $downloadUri = 'http://us.download.nvidia.com' + $downloadHref.split('=')[1].split('&')[0]
             $downloadPath = Join-Path $env:Temp 'GPUDriver.exe'
-            Invoke-WebRequest -UseBasicParsing -Uri $downloadUri -OutFile $downloadPath
+            # Invoke-WebRequest -UseBasicParsing -Uri $downloadUri -OutFile $downloadPath
+            [System.Net.WebClient]::new().DownloadFile($downloadUri, $downloadPath)
             return $downloadPath
         }
         default {
-            throw "Driver support unknown for $($gpuInfo.Name) on $Provider"
+            Write-Warning "Driver support unknown for $($gpuInfo.Name) on $Provider"
         }
     }
 }

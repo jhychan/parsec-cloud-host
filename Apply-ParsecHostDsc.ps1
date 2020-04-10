@@ -25,6 +25,7 @@ ForEach($moduleName in $requiredModules) {
 $psModulePath = $env:PSModulePath -split ';'
 $psModulePath += $PSScriptRoot
 $env:PSModulePath = ($psModulePath | Sort-Object | Get-Unique) -Join ';'
+Import-Module -Name 'ParsecHost' -Force
 
 # Set up dsc local configuration manager
 $lcmPath = Join-Path $env:ProgramData 'ParsecHost\Lcm'
