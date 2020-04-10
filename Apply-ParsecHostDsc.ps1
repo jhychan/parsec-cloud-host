@@ -29,12 +29,12 @@ Import-Module -Name 'ParsecHost' -Force
 
 # Set up dsc local configuration manager
 $lcmPath = Join-Path $env:ProgramData 'ParsecHost\Lcm'
-. .\ParsecHostLcm.ps1
+. $PSScriptRoot\ParsecHostLcm.ps1
 ParsecHostLcm -OutputPath $lcmPath
 Set-DscLocalConfigurationManager -Path $lcmPath -Force
 
 # Create dsc configuration and apply
-. .\ParsecHostDsc.ps1
+. $PSScriptRoot\ParsecHostDsc.ps1
 $configData = @{
     AllNodes = @(
         @{

@@ -12,6 +12,5 @@ Remove-Item -Path $zipPath -EA SilentlyContinue
 [System.Net.WebClient]::new().DownloadFile('https://github.com/jhychan/parsec-cloud-host/archive/master.zip', $zipPath)
 Remove-Item -Recurse -Path (Join-Path $env:Temp 'parsec-cloud-host-master') -EA SilentlyContinue
 Get-Item $zipPath | Expand-Archive -DestinationPath $env:Temp
-Set-Location -Path (Join-Path $env:Temp 'parsec-cloud-host-master')
-./Apply-ParsecHostDsc.ps1 -Verbose
+.\parsec-cloud-host-master\Apply-ParsecHostDsc.ps1 -Verbose
 ```
