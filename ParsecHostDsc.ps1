@@ -1,16 +1,16 @@
 Configuration ParsecHostDsc
 {
-	Param(
+    Param(
         [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         [PSCredential]$ParsecUserCredential
     )
 
-	Import-DscResource -ModuleName 'ParsecHost'
+    Import-DscResource -ModuleName 'ParsecHost'
 
-	Node 'localhost'
-	{
-		ParsecSystem 'System' {}
+    Node 'localhost'
+    {
+        ParsecSystem 'System' {}
 
         ParsecUser 'User'
         {
@@ -27,5 +27,5 @@ Configuration ParsecHostDsc
         {
             DependsOn = '[ParsecSoftware]Software'
         }
-	}
+    }
 }

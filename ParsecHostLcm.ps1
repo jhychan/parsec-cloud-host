@@ -5,10 +5,10 @@ Configuration ParsecHostLcm
     {
         Settings
         {
-        	ActionAfterReboot = 'ContinueConfiguration'
-        	ConfigurationMode = 'ApplyAndAutoCorrect'
-        	ConfigurationModeFrequencyMins = '60'
-        	RebootNodeIfNeeded = $false
+            ActionAfterReboot = 'ContinueConfiguration'
+            ConfigurationMode = 'ApplyAndAutoCorrect'
+            ConfigurationModeFrequencyMins = '60'
+            RebootNodeIfNeeded = $false
             RefreshMode = 'Push'
         }
     }
