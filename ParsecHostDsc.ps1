@@ -20,6 +20,7 @@ Configuration ParsecHostDsc
 
         ParsecSoftware 'Software'
         {
+            Credential = $ParsecUserCredential
             DependsOn = '[ParsecUser]User'
         }
 

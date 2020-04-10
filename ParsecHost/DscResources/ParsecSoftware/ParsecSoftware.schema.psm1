@@ -1,6 +1,10 @@
 Configuration ParsecSoftware
 {
-    Param()
+    Param(
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [PSCredential]$Credential
+    )
 
     Import-DscResource -ModuleName 'PSDscResources'
     Import-DscResource -ModuleName 'chocolatey'
@@ -83,6 +87,14 @@ Configuration ParsecSoftware
         ValueData = "`"$parsecFilePath`" app_silent=1"
         ValueType = 'String'
         DependsOn = '[ChocolateyPackage]Parsec'
+    }
+
+    # Make sure parsec is started - useful for first launch config
+    WindowsProcess 'ParsecRunning'
+    {
+        Ensure = 'Present'
+        Path = $parsecFilePath
+        Credential = $Credential
     }
 
     # Game launchers/platforms
