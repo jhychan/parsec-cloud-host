@@ -1,6 +1,6 @@
 Configuration ParsecSystem
 {
-	Param()
+    Param()
 
     Import-DscResource -ModuleName 'PSDscResources'
 
@@ -27,6 +27,15 @@ Configuration ParsecSystem
         Key = 'HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}'
         ValueName = 'IsInstalled'
         ValueData = 0
+        ValueType = 'Dword'
+        Force = $true
+    }
+    Registry "IE-First-Run-Disabled"
+    {
+        Ensure = 'Present'
+        Key = 'HKLM:\Software\Policies\Microsoft\Internet Explorer\Main'
+        ValueName = 'DisableFirstRunCustomize'
+        ValueData = 1
         ValueType = 'Dword'
         Force = $true
     }

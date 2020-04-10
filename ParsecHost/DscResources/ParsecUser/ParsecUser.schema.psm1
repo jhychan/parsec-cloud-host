@@ -1,6 +1,6 @@
 Configuration ParsecUser
 {
-	Param(
+    Param(
         [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         [PSCredential]$Credential
@@ -15,10 +15,17 @@ Configuration ParsecUser
         UserName = $Credential.UserName
         Password = $Credential
     }
-    Group "Group-Admnistrator-Parsec"
+    Group "Group-User-Parsec"
     {
-        Ensure= 'Present'
-        GroupName='Administrators'
+        Ensure = 'Present'
+        GroupName = 'Users'
+        MembersToInclude = $Credential.UserName
+        DependsOn = '[User]Account-User-Parsec'
+    }
+    Group "Group-Admin-Parsec"
+    {
+        Ensure = 'Present'
+        GroupName = 'Administrators'
         MembersToInclude = $Credential.UserName
         DependsOn = '[User]Account-User-Parsec'
     }
@@ -32,7 +39,7 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]Account-User-Parsec'
+        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
 
@@ -45,7 +52,7 @@ Configuration ParsecUser
         ValueData = 1
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]Account-User-Parsec'
+        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     
@@ -58,7 +65,7 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]Account-User-Parsec'
+        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
 
@@ -71,7 +78,7 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]Account-User-Parsec'
+        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     Registry "Explorer-HideFrequentFolders"
@@ -82,7 +89,7 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]Account-User-Parsec'
+        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     Registry "Explorer-LaunchToQuickAccess-Disabled"
@@ -93,7 +100,7 @@ Configuration ParsecUser
         ValueData = 1
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]Account-User-Parsec'
+        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     Registry "Explorer-ShowHiddenItems"
@@ -104,7 +111,7 @@ Configuration ParsecUser
         ValueData = 1
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]Account-User-Parsec'
+        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     Registry "Explorer-ShowFileExtensions"
@@ -115,7 +122,7 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]Account-User-Parsec'
+        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     Registry "Explorer-HideTaskbarTaskView"
@@ -126,7 +133,7 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]Account-User-Parsec'
+        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     Registry "Explorer-HideTaskbarSearch"
@@ -137,7 +144,7 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[User]Account-User-Parsec'
+        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
 
@@ -202,7 +209,7 @@ Configuration ParsecUser
         ValueData = $Credential.UserName
         ValueType = 'String'
         Force = $true
-        DependsOn = '[User]Account-User-Parsec'
+        DependsOn = '[Group]Group-Admin-Parsec'
     }
     Registry "AutoLogon-Password"
     {
@@ -212,6 +219,6 @@ Configuration ParsecUser
         ValueData = $Credential.GetNetworkCredential().Password
         ValueType = 'String'
         Force = $true
-        DependsOn = '[User]Account-User-Parsec'
+        DependsOn = '[Group]Group-Admin-Parsec'
     }
 }
