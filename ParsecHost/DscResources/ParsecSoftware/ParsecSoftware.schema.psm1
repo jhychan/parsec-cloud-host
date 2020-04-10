@@ -80,7 +80,7 @@ Configuration ParsecSoftware
         Ensure = 'Present'
         Key = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Run'
         ValueName = 'Parsec.App.0'
-        ValueData = "$parsecFilePath app_silent=1"
+        ValueData = "`"$parsecFilePath`" app_silent=1"
         ValueType = 'String'
         DependsOn = '[ChocolateyPackage]Parsec'
     }
