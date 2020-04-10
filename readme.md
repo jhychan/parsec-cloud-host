@@ -1,5 +1,6 @@
 # Parsec Cloud Host using PowerShell DSC
-Configure a cloud-hosted parsec VM in using PowerShell DSC
+Configure a cloud-hosted parsec VM in using PowerShell DSC.
+Leverages most of the hard work done by https://github.com/jamesstringerparsec/Parsec-Cloud-Preparation-Tool
 
 # Bootstrapping
 1. Start PowerShell with Administrator privileges:
