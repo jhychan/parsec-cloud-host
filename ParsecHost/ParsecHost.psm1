@@ -40,7 +40,7 @@ Function Test-CloudProvider {
         If($Force -or $Provider -notin ${global:cloudProviderResult}.Keys) {
             $reqArgs = $providerMetadataReq.$Provider
             $resp = try { Invoke-WebRequest @commonReqArgs @reqArgs } catch {}
-            $global:cloudProviderResult.$Provider = $reqStatus.StatusCode -eq 200
+            $global:cloudProviderResult.$Provider = $resp.StatusCode -eq 200
         }
         Write-Output $global:cloudProviderResult.$Provider
     }
