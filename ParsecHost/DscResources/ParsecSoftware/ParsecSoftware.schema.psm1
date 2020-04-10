@@ -84,4 +84,13 @@ Configuration ParsecSoftware
         ValueType = 'String'
         DependsOn = '[ChocolateyPackage]Parsec'
     }
+
+    # Game launchers/platforms
+    ChocolateyPackage 'Steam'
+    {
+        Ensure = 'Present'
+        Name = 'steam'
+        Version = 'Latest'
+        DependsOn = '[ChocolateySoftware]Chocolatey'
+    }
 }
