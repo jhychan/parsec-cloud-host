@@ -102,7 +102,7 @@ Configuration ParsecSystem
         Force = $true
     }
 
-    # # Disable recently installed items in start menu
+    # Disable recently installed items in start menu
     Registry "StartMenu-RecentlyInstalled-Disabled"
     {
         Ensure = 'Present'
@@ -111,5 +111,13 @@ Configuration ParsecSystem
         ValueData = 1
         ValueType = 'Dword'
         Force = $true
+    }
+
+    # Make sure audio service is running
+    Service 'AudioEndpointBuilder'
+    {
+        Ensure = 'Present'
+        Name = 'AudioEndpointBuilder'
+        State = 'Running'
     }
 }
