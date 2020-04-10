@@ -11,6 +11,7 @@ Configuration ParsecHostDsc
 	Node 'localhost'
 	{
 		ParsecSystem 'System' {}
+
         ParsecUser 'User'
         {
             Credential = $ParsecUserCredential
@@ -21,6 +22,7 @@ Configuration ParsecHostDsc
         {
             DependsOn = '[ParsecUser]User'
         }
+
         ParsecDrivers 'Drivers'
         {
             DependsOn = '[ParsecSoftware]Software'
