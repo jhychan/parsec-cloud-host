@@ -5,7 +5,7 @@ Configure a cloud-hosted parsec VM in using PowerShell DSC
 1. Start PowerShell with Administrator privileges:
 ```
 Set-Location -Path $env:Temp
-Set-ExecutionPolicy 'Bypass' -Force
+Set-ExecutionPolicy -ExecutionPolicy 'Bypass' -Scope 'Process' -Force
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $zipPath = Join-Path $env:Temp 'parsec-cloud-host.zip'
 Remove-Item -Path $zipPath -EA SilentlyContinue
