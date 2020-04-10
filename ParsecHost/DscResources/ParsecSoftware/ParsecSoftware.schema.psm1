@@ -79,15 +79,15 @@ Configuration ParsecSoftware
 
     # Configure parsec autorun for all users
     $parsecFilePath = Join-Path $env:ProgramFiles 'Parsec\parsecd.exe'
-    Registry 'ParsecAutorun'
-    {
-        Ensure = 'Present'
-        Key = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Run'
-        ValueName = 'Parsec.App.0'
-        ValueData = "`"$parsecFilePath`" app_silent=1"
-        ValueType = 'String'
-        DependsOn = '[ChocolateyPackage]Parsec'
-    }
+    # Registry 'ParsecAutorun'
+    # {
+    #     Ensure = 'Present'
+    #     Key = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Run'
+    #     ValueName = 'Parsec.App.0'
+    #     ValueData = "`"$parsecFilePath`" app_silent=1"
+    #     ValueType = 'String'
+    #     DependsOn = '[ChocolateyPackage]Parsec'
+    # }
 
     # Make sure parsec is started - useful for first launch config
     WindowsProcess 'ParsecRunning'
@@ -96,6 +96,7 @@ Configuration ParsecSoftware
         Path = $parsecFilePath
         Arguments = ''
         Credential = $Credential
+        DependsOn = '[ChocolateyPackage]Parsec'
     }
 
     # Game launchers/platforms
