@@ -44,7 +44,7 @@ $configData = @{
     )
 }
 If($global:userCredential -isnot [PSCredential]) {
-    $global:userCredential = Get-Credential -UserName 'parsec' -Message 'Account that will log onto this machine and run parsec (will be created if it does not exist):'
+    $global:userCredential = Get-Credential -UserName 'parsecuser' -Message 'Account that will log onto this machine and run parsec (will be created if it does not exist):'
 }
 
 $dscPath = Join-Path $env:ProgramData 'ParsecHost\Dsc'
