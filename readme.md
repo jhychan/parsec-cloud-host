@@ -38,7 +38,7 @@ Set-Location -Path $workingDir
 ```
 
 
-# Configuration Items Status
+# Staus of Configuration Items
 ## Windows Features:
  - [x] .Net 3.5 Framework
  - [x] .Net 4.x Framework
