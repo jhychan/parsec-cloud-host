@@ -11,6 +11,7 @@ $ErrorActionPreference = 'Stop'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 # Install dependencies
+Write-Host -ForegroundColor 'Green' 'Installing PowerShell dependencies'
 If(-not (Get-PackageProvider -ListAvailable -Name 'NuGet' -EA SilentlyContinue)) {
     Install-PackageProvider -Name 'NuGet' -Force -Verbose | Out-Null
 }
@@ -21,19 +22,22 @@ ForEach($moduleName in $requiredModules) {
     }
 }
 
-# Make parsec dsc resources available in current session
+# Make parsec module and dsc resources available in current session
+Write-Host -ForegroundColor 'Green' 'Adding ParsecHost module to PowerShell search paths'
 $psModulePath = $env:PSModulePath -split ';'
 $psModulePath += $PSScriptRoot
 $env:PSModulePath = ($psModulePath | Sort-Object | Get-Unique) -Join ';'
 Import-Module -Name 'ParsecHost' -Force
 
 # Set up dsc local configuration manager
+Write-Host -ForegroundColor 'Green' 'Applying Local Configuration Manager settings'
 $lcmPath = Join-Path $env:ProgramData 'ParsecHost\Lcm'
 . $PSScriptRoot\ParsecHostLcm.ps1
 ParsecHostLcm -OutputPath $lcmPath
 Set-DscLocalConfigurationManager -Path $lcmPath -Force
 
 # Create dsc configuration and apply
+Write-Host -ForegroundColor 'Green' 'Applying Parsec Host settings'
 . $PSScriptRoot\ParsecHostDsc.ps1
 $configData = @{
     AllNodes = @(
@@ -44,7 +48,8 @@ $configData = @{
     )
 }
 If($global:userCredential -isnot [PSCredential]) {
-    $global:userCredential = Get-Credential -UserName 'parsecuser' -Message 'Account that will log onto this machine and run parsec (will be created if it does not exist):'
+    Write-Host -ForegroundColor 'Green' 'Prompting for new/existing autoloon user account'
+    $global:userCredential = Get-Credential -UserName 'parsecuser' -Message 'Account that will autologon and run parsec (if account already exists password will be updated)'
 }
 
 $dscPath = Join-Path $env:ProgramData 'ParsecHost\Dsc'
@@ -52,4 +57,9 @@ ParsecHostDsc -ConfigurationData $configData -OutputPath $dscPath -ParsecUserCre
 Start-DscConfiguration -Path $dscPath -Force -Wait
 
 # Prompt before restart
-Restart-Computer -Confirm:$true -Verbose
+$reboot = Read-Host -Prompt 'DSC Configuration complete. Ready to reboot? (y/n)'
+if ($reboot -eq 'y') {
+    Restart-Computer -Confirm:$false
+} else {
+    Write-Host -ForegroundColor 'Skipping reboot. Please reboot the machine manually to complete configuration.'
+}
