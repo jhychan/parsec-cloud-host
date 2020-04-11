@@ -14,20 +14,20 @@ This module is targeted at Window Server 2016/2019 machines. This requirement is
 
 Cloud provider and GPU list:
  - Azure
-  - Tesla M60
+   - Tesla M60
  - AWS
-  - GRID K520
-  - Tesla M60
-  - Tesla P4
-  - Tesla T4
+   - GRID K520
+   - Tesla M60
+   - Tesla P4
+   - Tesla T4
  - Google Cloud
-  - Tesla P4
-  - Tesla T4
+   - Tesla P4
+   - Tesla T4
  - Paperspace
-  - Quadro P4000
-  - Quadro P5000
+   - Quadro P4000
+   - Quadro P5000
  - Anything else
-  - You will have to manually install GPU drivers
+   - You will have to manually install GPU drivers
 
 ## Apply the Configuration
 Start PowerShell with **administrator** privileges, then copy-and-paste the following command block:
