@@ -55,8 +55,7 @@ Set-Location -Path $workingDir
  - [ ] Timed usaged warnings
 
 ## Windows User:
- - [x] Configure user account
- 	- [x] autologon configured
+ - [x] Configure local user account with autologon
  - [x] Disable IE proxy settings
  - [x] Automatically close apps on shutdown
  - [x] Disable mouse acceleration
