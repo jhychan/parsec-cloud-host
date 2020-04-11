@@ -112,12 +112,4 @@ Configuration ParsecSystem
         ValueType = 'Dword'
         Force = $true
     }
-
-    # Make sure audio service is running
-    Service 'AudioEndpointBuilder'
-    {
-        Ensure = 'Present'
-        Name = 'AudioEndpointBuilder'
-        State = 'Running'
-    }
 }
