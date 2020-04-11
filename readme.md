@@ -30,8 +30,6 @@ Cloud provider and GPU list:
    - You will have to manually install GPU drivers
 
 ## Apply the Configuration
-**Before proceeding, please make sure you install the latest Windows Updates on the machine**
-
 Start PowerShell with **administrator** privileges, then copy-and-paste the following command block:
 ```powershell
 # Force TLS 1.2, allow arbitrary script execution just for this session
