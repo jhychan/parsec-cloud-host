@@ -10,7 +10,7 @@ Still in a very alpha state, so not quite on par with the Parsec Cloud Preparati
 
 # How to use this
 ## Build a machine
-This module is targeted at Window Server 2016/2019 machines. This requirement is soft however - the functional requirement is for DSC 5.0 and above which is only available on machines that have Windows Management Framework 5.1 and above. This means the module should support Windows 10 as well (not tested).
+This module has been developed with Window Server 2016/2019 in mind, however there is no hard requirement on the OS version. The only technical requirement for this module is for Windows Management Framework 5.0 and PowerShell 5.1 for the DSC configurations to function correctly. The authors recommendation is to stick with Windows 10, Server 2016 or Server 2019.
 
 Cloud provider and GPU list:
  - Azure
@@ -26,7 +26,7 @@ Cloud provider and GPU list:
  - Paperspace
    - Quadro P4000
    - Quadro P5000
- - Anything else
+ - Other
    - You will have to manually install GPU drivers
 
 ## Apply the Configuration
@@ -73,7 +73,7 @@ The checklist below summaries the configuration that is made by this module. Thi
  - [x] Disable Server Manager at logon
  - [x] Disable lockscreen
  - [ ] Auto-shutdown on idle
- - [ ] Timed usaged warnings
+ - [ ] Timed usage warnings
 
 ## Windows User:
  - [x] Configure local user account with autologon
