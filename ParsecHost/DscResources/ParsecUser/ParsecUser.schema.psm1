@@ -27,7 +27,45 @@ Configuration ParsecUser
         Ensure = 'Present'
         GroupName = 'Administrators'
         MembersToInclude = $Credential.UserName
-        DependsOn = '[User]Account-User-Parsec'
+        DependsOn = '[Group]Group-User-Parsec'
+    }
+
+    # Parsec wallpaper
+    $wallpaperPath = Join-Path $env:ProgramData 'ParsecHost\wallpaper.png'
+    Script 'ParsecWallpaperFile'
+    {
+        TestScript = {
+            Test-Path $using:wallpaperPath
+        }
+        GetScript = {
+            return @{ Result = Get-Item $wallpaperPath }
+        }
+        SetScript = {
+            $uri = 'https://s3.amazonaws.com/parseccloud/image/parsec+desktop.png'
+            [System.Net.WebClient]::new().DownloadFile($uri, $using:wallpaperPath)
+        }
+    }
+    Registry 'ParsecWallpaper'
+    {
+        Ensure = 'Present'
+        Key = 'HKCU:\Control Panel\Desktop'
+        ValueName = 'WallPaper'
+        ValueData = $wallpaperPath
+        ValueType = 'String'
+        Force = $true
+        DependsOn = '[Script]ParsecWallpaperFile','[Group]Group-Admin-Parsec'
+        PsDscRunAsCredential = $Credential
+    }
+    Registry 'ParsecWallpaperFill'
+    {
+        Ensure = 'Present'
+        Key = 'HKCU:\Control Panel\Desktop'
+        ValueName = 'WallPaperStyle'
+        ValueData = '10'
+        ValueType = 'String'
+        Force = $true
+        DependsOn = '[Registry]ParsecWallpaper','[Group]Group-Admin-Parsec'
+        PsDscRunAsCredential = $Credential
     }
 
     # Disable IE Proxy

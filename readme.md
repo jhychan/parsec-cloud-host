@@ -85,7 +85,7 @@ The checklist below summaries the configuration that is made by this module. Thi
     - [x] Show file extensions
  	- [x] Disable recent files
  - [x] Desktop settings
- 	- [ ] Set wallpaper
+ 	- [x] Set wallpaper
 
 ## Install Software:
  - [x] PowerShell modules
