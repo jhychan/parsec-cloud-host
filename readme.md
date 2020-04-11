@@ -1,5 +1,5 @@
 # Configure Parsec Host using PowerShell DSC
-This module configures a parsec host machine using PowerShell DSC. Most of the work here is based off the hard work done by the author of the [Parsec Cloud Preparation Tool](https://github.com/jamesstringerparsec/Parsec-Cloud-Preparation-Tool). There is no requirement for the machine to be cloud hosted - this module can be applied to any machine you want configured as a parsec host.
+This module configures a parsec host machine using PowerShell Desired State Configuration. Most of the work here is based off the hard work done by the author of the [Parsec Cloud Preparation Tool](https://github.com/jamesstringerparsec/Parsec-Cloud-Preparation-Tool). There is no requirement for the machine to be cloud hosted - this module can be applied to any machine you want configured as a parsec host.
 
 # Status
 Still in a very alpha state, so not yet on par with the Parsec Cloud Preparation Tool. Nvidia driver install and parsec post-install config are the key functions still being worked on.
