@@ -1,14 +1,12 @@
-# Parsec Cloud Host using PowerShell DSC
-Configure a cloud-hosted parsec machine in using PowerShell DSC. Most of the work here is based off the hard work done by the author of the [Parsec Cloud Preparation Tool](https://github.com/jamesstringerparsec/Parsec-Cloud-Preparation-Tool).
-
-There is no hard requirement for the machine to be cloud hosted - this module can be applied to any machine you want configured as a parsec host.
+# Configure Parsec Host using PowerShell DSC
+This module configures a parsec host machine using PowerShell DSC. Most of the work here is based off the hard work done by the author of the [Parsec Cloud Preparation Tool](https://github.com/jamesstringerparsec/Parsec-Cloud-Preparation-Tool). There is no requirement for the machine to be cloud hosted - this module can be applied to any machine you want configured as a parsec host.
 
 # Status
-Still in a very alpha state, so not quite on par with the Parsec Cloud Preparation Tool. Nvidia driver install and parsec post-install config are the key functions still being worked on.
+Still in a very alpha state, so not yet on par with the Parsec Cloud Preparation Tool. Nvidia driver install and parsec post-install config are the key functions still being worked on.
 
 # How to use this
 ## Build a machine
-This module has been developed with Window Server 2016/2019 in mind, however there is no hard requirement on the OS version. The only technical requirement for this module is for Windows Management Framework 5.0 and PowerShell 5.1 for the DSC configurations to function correctly. The authors recommendation is to stick with Windows 10, Server 2016 or Server 2019.
+This module has been developed to simplfy the deployment of parsec to cloud-hosted Window 10 or Windows Server 2016/2019 VMs with NVIDIA GPUs. However there is no hard requirement for the machine to be cloud hosted, nor for the machine to be limited to those versions of Windows and GPUs. The only technical requirement for this module to work correctly is that your choice of Windows must have PowerShell 5.1 or higher installed/available, and of course for Parsec's minimum requirements to be met.
 
 Cloud provider and GPU list:
  - Azure
@@ -107,3 +105,5 @@ The checklist below summaries the configuration that is made by this module. Thi
  	- [ ] Disable all other GPUs
  	- [ ] Allow only one monitor
  	- [ ] Check GRID mode
+ - [ ] Unsupported GPUs
+    - [ ] Warn user about parsec compat and manual driver install
