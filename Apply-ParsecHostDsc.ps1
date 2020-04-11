@@ -6,12 +6,13 @@ param()
 
 # Script flow control
 $ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
 
 # Force tls 1.2 only
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 # Install dependencies
-Write-Host -ForegroundColor 'Green' 'Installing DSC dependencies'
+Write-Host -ForegroundColor 'Green' 'Checking DSC dependencies'
 If(-not (Get-PackageProvider -ListAvailable -Name 'NuGet' -EA SilentlyContinue)) {
     Install-PackageProvider -Name 'NuGet' -Force -Verbose | Out-Null
 }
@@ -59,12 +60,11 @@ ParsecHostDsc -ConfigurationData $configData -OutputPath $dscPath -ParsecUserCre
 Start-DscConfiguration -Path $dscPath -Force -Wait
 
 # Prompt user to login to parsec (should already be running)
-Write-Host 'Start parsec (if not already running), log in and configure settings and make sure hosting is enabled.'
-Write-Host "At next reboot this machine will automatically log on as $($userCredential.UserName) and be ready to connect remotely via Parsec client."
+Write-Host -ForegroundColor 'Green' 'Start parsec (if not already running), log in and configure settings and make sure hosting is enabled.'
 Read-Host -Prompt 'Hit [enter] to continue...' | Out-Null
 
 # Prompt before restart
-Write-Host "DSC Configuration complete. At next reboot this machine will  "
+Write-Host -ForegroundColor 'Green' "At next reboot this machine will automatically log on as $($userCredential.UserName) and be ready to connect remotely via Parsec client."
 $reboot = Read-Host -Prompt 'Ready to reboot? (y/n)'
 if ($reboot -eq 'y') {
     Write-Host -ForegroundColor 'Green' 'Rebooting...'
