@@ -2,7 +2,23 @@ Configuration ParsecSystem
 {
     Param()
 
+    Import-DscResource -ModuleName 'ComputerManagementDsc'
     Import-DscResource -ModuleName 'PSDscResources'
+
+    # Power plan
+    PowerPlan 'HighPerformancePowerPlan'
+    {
+        IsSingleInstance = 'Yes'
+        Name = 'High performance'
+    }
+
+    # Harden RDP
+    RemoteDesktopAdmin RemoteDesktopSettings
+    {
+        IsSingleInstance = 'Yes'
+        Ensure = 'Present'
+        UserAuthentication = 'Secure'
+    }
 
     # Required features built-in to Windows
     WindowsFeatureSet "WindowsFeatures"

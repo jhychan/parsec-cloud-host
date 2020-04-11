@@ -2,8 +2,8 @@ Configuration ParsecDrivers
 {
     Param()
 
-    Import-DscResource -ModuleName 'PSDscResources'
     Import-DscResource -ModuleName 'chocolatey'
+    Import-DscResource -ModuleName 'PSDscResources'
 
     ChocolateyPackage 'Devcon'
     {
