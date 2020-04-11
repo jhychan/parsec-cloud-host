@@ -95,9 +95,9 @@ The checklist below summaries the configuration that is made by this module. Thi
  	- [x] 7zip
  	- [x] Google Chrome
  	- [x] Parsec
- 	   - [ ] Parsec autostartup (as a service)
- 	   - [ ] Prompt for logging in
- 	   - [ ] Pre-configure settings
+ 	   - [x] Parsec autostartup (as a scheduled task)
+ 	   - [x] User message to login and configure parsec
+ 	   - [x] Symlink parsec config folder to the autologon accoun
  	- [x] Steam
  	   - [ ] Prompt for logging in
  	   - [ ] Fix save-credentials

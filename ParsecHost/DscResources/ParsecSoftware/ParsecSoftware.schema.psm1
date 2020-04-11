@@ -6,8 +6,9 @@ Configuration ParsecSoftware
         [PSCredential]$Credential
     )
 
-    Import-DscResource -ModuleName 'PSDscResources'
     Import-DscResource -ModuleName 'chocolatey'
+    Import-DscResource -ModuleName 'ComputerManagementDsc'
+    Import-DscResource -ModuleName 'PSDscResources'
 
     $chocolateyInstallPath = Join-Path $env:ProgramData 'chocolatey'
     Environment 'ChocolateyInstallPath'
@@ -42,6 +43,15 @@ Configuration ParsecSoftware
         DependsOn = '[ChocolateySoftware]Chocolatey'
     }
 
+    # Who doesn't love steam ;)
+    ChocolateyPackage 'Steam'
+    {
+        Ensure = 'Present'
+        Name = 'steam'
+        Version = 'Latest'
+        DependsOn = '[ChocolateySoftware]Chocolatey'
+    }
+
     # Generated parsec chocolatey package
     $packageName = 'parsecgaming'
     $packageVersion = '1.0'
@@ -54,6 +64,7 @@ Configuration ParsecSoftware
         Type = 'Directory'
         DependsOn = '[ChocolateySoftware]Chocolatey'
     }
+
     $packageFile = "$packageName.$packageVersion.nupkg"
     $packageFilePath = Join-Path $packageFolder $packageFile
     $packageNuspec = Join-Path $PSScriptRoot "..\..\Packages\$packageName\$packageName.nuspec"
@@ -77,34 +88,51 @@ Configuration ParsecSoftware
         DependsOn = '[Script]ParsecInstallerPackage'
     }
 
-    # Configure parsec autorun for all users
+    # Configure parsec autolaunch via scheduled task for the logged in user
+    $parsecScheduledTaskName = 'Parsec'
     $parsecFilePath = Join-Path $env:ProgramFiles 'Parsec\parsecd.exe'
-    # Registry 'ParsecAutorun'
-    # {
-    #     Ensure = 'Present'
-    #     Key = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Run'
-    #     ValueName = 'Parsec.App.0'
-    #     ValueData = "`"$parsecFilePath`" app_silent=1"
-    #     ValueType = 'String'
-    #     DependsOn = '[ChocolateyPackage]Parsec'
-    # }
-
-    # Make sure parsec is started - useful for first launch config
-    WindowsProcess 'ParsecRunning'
+    $dummyPassword = ConvertTo-SecureString -AsPlainText -String ' ' -Force
+    $builtinUsers = [PSCredential]::New('Users',$dummyPassword)
+    ScheduledTask 'ParsecAutorun'
     {
         Ensure = 'Present'
-        Path = $parsecFilePath
-        Arguments = ''
-        Credential = $Credential
+        TaskName = $parsecScheduledTaskName
+        ExecuteAsCredential = $builtinUsers
+        LogonType = 'Group'
+        RunLevel = 'Highest'
+        ScheduleType = 'AtLogOn'
+        ActionExecutable = $parsecFilePath
+        MultipleInstances = 'IgnoreNew'
         DependsOn = '[ChocolateyPackage]Parsec'
     }
 
-    # Game launchers/platforms
-    ChocolateyPackage 'Steam'
+    # Use scheduled task to launch parsec in current session for setting up login
+    Script 'ParsecRunning'
     {
-        Ensure = 'Present'
-        Name = 'steam'
-        Version = 'Latest'
-        DependsOn = '[ChocolateySoftware]Chocolatey'
+        SetScript = {
+            Start-ScheduledTask -TaskName $using:parsecScheduledTaskName
+            Start-Sleep -Seconds 5
+        }
+        TestScript = { (Get-Process -Name 'parsecd' -EA 'SilentlyContinue') -ne $null }
+        GetScript = { @{ Result = Get-Process -Name 'parsecd' -EA 'SilentlyContinue' } }
+        DependsOn = '[ScheduledTask]ParsecAutorun'
+    }
+
+    # Current user might not be the autologon user - hardlink the parsec config dir if not
+    $parsecConfigDir = Join-Path $env:SystemDrive "Users\$($Credential.UserName)\AppData\Roaming\Parsec"
+    $currentConfigDir = Join-Path $env:AppData "Parsec"
+    Script 'ParsecUserConfigFolder'
+    {
+        SetScript = {
+            New-Item -ItemType 'Junction' -Path $using:parsecConfigDir -Value $using:currentConfigDir
+        }
+        TestScript = {
+            # if folder exists then do nothing - either already hardlinked, or current session is the autologon account
+            Test-Path $using:parsecConfigDir
+        }
+        GetScript = {
+            @{ Result = Get-Item $using:parsecConfigDir }
+        }
+        Dependson = '[Script]ParsecRunning'
     }
 }
