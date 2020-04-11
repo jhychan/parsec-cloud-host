@@ -1,19 +1,36 @@
 # Parsec Cloud Host using PowerShell DSC
-Configure a cloud-hosted parsec VM in using PowerShell DSC.
+Configure a cloud-hosted parsec machine in using PowerShell DSC.
 
 Largly based on the [Parsec Cloud Preparation Tool](https://github.com/jamesstringerparsec/Parsec-Cloud-Preparation-Tool).
+
+There is no requirement for the machine to be cloud hosted - it could just as well be a physical machine elsewhere in your home.
 
 # Status
 Still in a very alpha state, so not quite on par with the Parsec Cloud Preparation Tool. Nvidia driver install and parsec post-install config are the key functions still being worked on.
 
 # How to use this
-1. Build a Window Server 2016 or Server 2019 machine. This module supports:
-  - Azure (M60)
-  - AWS (K520, M60, P4, T4)
-  - GCP (P4, T4)
-  - Paperspace (P4000, P5000)
-  - Anything else (you have to manually install NVidia drivers)
-2. Start PowerShell with **administrator** privileges, then run the following (you can copy paste the entire block including comments):
+## Build a machine
+This module is targeted at Window Server 2016/2019 machines. This requirement is soft however - the functional requirement is for DSC 5.0 and above which is only available on machines that have Windows Management Framework 5.1 and above. This means the module should support Windows 10 as well (not tested).
+
+Cloud provider and GPU list:
+ - Azure
+  - Tesla M60
+ - AWS
+  - GRID K520
+  - Tesla M60
+  - Tesla P4
+  - Tesla T4
+ - Google Cloud
+  - Tesla P4
+  - Tesla T4
+ - Paperspace
+  - Quadro P4000
+  - Quadro P5000
+ - Anything else
+  - You will have to manually install GPU drivers
+
+## Apply the Configuration
+Start PowerShell with **administrator** privileges, then copy-and-paste the following command block:
 ```powershell
 # Force TLS 1.2, allow arbitrary script execution just for this session
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -38,11 +55,11 @@ Set-Location -Path $workingDir
 ```
 
 
-# Staus of Configuration Items
+# Progress Tracker
 ## Windows Features:
  - [x] .Net 3.5 Framework
  - [x] .Net 4.x Framework
- - [x] Direct-Play
+ - [x] DirectPlay
 
 ## Windows General:
  - [x] Disable IE ESC
