@@ -58,8 +58,14 @@ $dscPath = Join-Path $env:ProgramData 'ParsecHost\Dsc'
 ParsecHostDsc -ConfigurationData $configData -OutputPath $dscPath -ParsecUserCredential $global:userCredential | Out-Null
 Start-DscConfiguration -Path $dscPath -Force -Wait
 
+# Prompt user to login to parsec (should already be running)
+Write-Host 'Start parsec (if not already running), log in and configure settings and make sure hosting is enabled.'
+Write-Host "At next reboot this machine will automatically log on as $($userCredential.UserName) and be ready to connect remotely via Parsec client."
+Read-Host -Prompt 'Hit [enter] to continue...' | Out-Null
+
 # Prompt before restart
-$reboot = Read-Host -Prompt 'DSC Configuration complete. Ready to reboot? (y/n)'
+Write-Host "DSC Configuration complete. At next reboot this machine will  "
+$reboot = Read-Host -Prompt 'Ready to reboot? (y/n)'
 if ($reboot -eq 'y') {
     Write-Host -ForegroundColor 'Green' 'Rebooting...'
     Restart-Computer -Confirm:$false
