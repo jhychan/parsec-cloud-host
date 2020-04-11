@@ -22,7 +22,7 @@ Set-ExecutionPolicy -ExecutionPolicy 'Bypass' -Scope 'Process' -Force
 # Set some paths
 $workingDir = $env:Temp
 $zipFile = Join-Path $workingDir 'parsec-cloud-host.zip'
-$extractedPath = Joi-Path $workingDir 'parsec-cloud-host-master'
+$extractedPath = Join-Path $workingDir 'parsec-cloud-host-master'
 
 # Clean up any previous runs
 Remove-Item -Path $zipFile -EA SilentlyContinue
