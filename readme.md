@@ -52,7 +52,7 @@ Set-Location -Path $workingDir
 
 
 # Progress Tracker
-The checklist below summaries the configuration that is made by this module. This is also where you can track what configuration capabilities are under development.
+The checklist below outlines the configuration applied by this module, and tracks configuration capabilities that are under development.
 
 ## Windows Features:
  - [x] .Net 3.5 Framework
