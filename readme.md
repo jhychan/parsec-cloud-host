@@ -1,7 +1,10 @@
 # Parsec Cloud Host using PowerShell DSC
 Configure a cloud-hosted parsec VM in using PowerShell DSC.
 
-Largly based on the [Parsec Cloud Prep Tool](https://github.com/jamesstringerparsec/Parsec-Cloud-Preparation-Tool).
+Largly based on the [Parsec Cloud Preparation Tool](https://github.com/jamesstringerparsec/Parsec-Cloud-Preparation-Tool).
+
+# Status
+Still in a very alpha state, so not quite on par with the Parsec Cloud Preparation Tool. Nvidia driver install and parsec post-install config are the key functions still being worked on.
 
 # How to use this
 1. Build a Window Server 2016 or Server 2019 machine. This module supports:
@@ -10,7 +13,7 @@ Largly based on the [Parsec Cloud Prep Tool](https://github.com/jamesstringerpar
  - GCP (P4, T4)
  - Paperspace (P4000, P5000)
  - Anything else (you have to manually install NVidia drivers)
-2. Start PowerShell with *administrator* privileges, then run the following:
+2. Start PowerShell with **administrator** privileges, then run the following (you can copy paste the entire block including comments):
 ```powershell
 # Force TLS 1.2, allow arbitrary script execution just for this session
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -18,17 +21,16 @@ Set-ExecutionPolicy -ExecutionPolicy 'Bypass' -Scope 'Process' -Force
 
 # Set some paths
 $workingDir = $env:Temp
-$zipFile = Join-Path $env:Temp 'parsec-cloud-host.zip'
-$extractionRoot = $workingDir
+$zipFile = Join-Path $workingDir 'parsec-cloud-host.zip'
 $extractedPath = Joi-Path $workingDir 'parsec-cloud-host-master'
 
 # Clean up any previous runs
 Remove-Item -Path $zipFile -EA SilentlyContinue
-Remove-Item -Recurse -Path (Join-Path $env:Temp 'parsec-cloud-host-master') -EA SilentlyContinue
+Remove-Item -Recurse -Path $extractedPath -EA SilentlyContinue
 
 # Download zip of the repo and extract
 [System.Net.WebClient]::new().DownloadFile('https://github.com/jhychan/parsec-cloud-host/archive/master.zip', $zipFile)
-Get-Item $zipFile | Expand-Archive -DestinationPath $env:Temp
+Get-Item $zipFile | Expand-Archive -DestinationPath $workingDir
 
 # Apply the configuration
 Set-Location -Path $workingDir
@@ -36,13 +38,13 @@ Set-Location -Path $workingDir
 ```
 
 
-# Configuration List (Work in Progress)
-* Windows Features:
+# Configuration Items Status
+## Windows Features:
  - [x] .Net 3.5 Framework
  - [x] .Net 4.x Framework
  - [x] Direct-Play
 
-* Windows General:
+## Windows General:
  - [x] Disable IE ESC
  - [x] Disable Automatic Updates (Windows)
  - [x] Enable automatic NTP sync
@@ -52,7 +54,7 @@ Set-Location -Path $workingDir
  - [ ] Auto-shutdown on idle
  - [ ] Timed usaged warnings
 
-* Windows User:
+## Windows User:
  - [x] Configure user account
  	- [x] autologon configured
  - [x] Disable IE proxy settings
@@ -65,7 +67,7 @@ Set-Location -Path $workingDir
  - [x] Desktop settings
  	[ ] Set wallpaper
 
-* Install Software:
+## Install Software:
  - [x] PowerShell modules
  	- [x] Chocolatey
  	- [x] PSDscResources
@@ -80,7 +82,7 @@ Set-Location -Path $workingDir
  	   - [ ] Prompt for logging in
  	   - [ ] Fix save-credentials
 
-* Install Drivers / Driver Utilities:
+## Install Drivers:
  - [x] devcon
  - [x] VB-Cable
  - [ ] Nvidia GPU
