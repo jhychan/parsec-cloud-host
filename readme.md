@@ -1,7 +1,5 @@
 # Parsec Cloud Host using PowerShell DSC
-Configure a cloud-hosted parsec machine in using PowerShell DSC.
-
-Largly based on the [Parsec Cloud Preparation Tool](https://github.com/jamesstringerparsec/Parsec-Cloud-Preparation-Tool).
+Configure a cloud-hosted parsec machine in using PowerShell DSC. Most of the work here is based off the hard work done by the author of the [Parsec Cloud Preparation Tool](https://github.com/jamesstringerparsec/Parsec-Cloud-Preparation-Tool).
 
 There is no hard requirement for the machine to be cloud hosted - this module can be applied to any machine you want configured as a parsec host.
 
