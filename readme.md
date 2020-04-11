@@ -8,11 +8,11 @@ Still in a very alpha state, so not quite on par with the Parsec Cloud Preparati
 
 # How to use this
 1. Build a Window Server 2016 or Server 2019 machine. This module supports:
- - Azure (M60)
- - AWS (K520, M60, P4, T4)
- - GCP (P4, T4)
- - Paperspace (P4000, P5000)
- - Anything else (you have to manually install NVidia drivers)
+  - Azure (M60)
+  - AWS (K520, M60, P4, T4)
+  - GCP (P4, T4)
+  - Paperspace (P4000, P5000)
+  - Anything else (you have to manually install NVidia drivers)
 2. Start PowerShell with **administrator** privileges, then run the following (you can copy paste the entire block including comments):
 ```powershell
 # Force TLS 1.2, allow arbitrary script execution just for this session
