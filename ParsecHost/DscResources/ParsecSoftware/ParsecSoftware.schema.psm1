@@ -88,6 +88,32 @@ Configuration ParsecSoftware
         DependsOn = '[Script]ParsecInstallerPackage'
     }
 
+    # Set some defaults
+    $currentConfigDir = Join-Path $env:AppData 'Parsec'
+    $currentConfigPath = Join-Path $currentConfigDir 'config.txt'
+    File 'ParsecConfigFile'
+    {
+        Ensure = 'Present'
+        DestinationPath = $currentConfigPath
+        Type = 'File'
+        Contents = @"
+# All configuration settings must appear on a new line.
+# All whitespace, besides the newline character '\n', is ignored.
+# All settings passed via the command line take precedence.
+# The configuration file will be overwritten by Parsec when changing settings,
+#   so if you edit this file while Parsec is running, make sure to save this file
+#   and restart Parsec immediately so your changes are preserved.
+
+# Example:
+# encoder_bitrate = 10
+
+app_run_level = 3
+network_server_start_port = 8000
+
+"@
+        DependsOn = '[ChocolateyPackage]Parsec'
+    }
+
     # Configure parsec autolaunch via scheduled task for the logged in user
     $parsecScheduledTaskName = 'Parsec'
     $parsecFilePath = Join-Path $env:ProgramFiles 'Parsec\parsecd.exe'
@@ -103,7 +129,7 @@ Configuration ParsecSoftware
         ScheduleType = 'AtLogOn'
         ActionExecutable = $parsecFilePath
         MultipleInstances = 'IgnoreNew'
-        DependsOn = '[ChocolateyPackage]Parsec'
+        DependsOn = '[File]ParsecConfigFile'
     }
 
     # Use scheduled task to launch parsec in current session for setting up login
@@ -120,7 +146,6 @@ Configuration ParsecSoftware
 
     # Current user might not be the autologon user - hardlink the parsec config dir if not
     $parsecConfigDir = Join-Path $env:SystemDrive "Users\$($Credential.UserName)\AppData\Roaming\Parsec"
-    $currentConfigDir = Join-Path $env:AppData "Parsec"
     Script 'ParsecUserConfigFolder'
     {
         SetScript = {

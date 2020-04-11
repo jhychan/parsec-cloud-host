@@ -95,7 +95,8 @@ The checklist below summaries the configuration that is made by this module. Thi
  	- [x] Parsec
  	   - [x] Parsec autostartup (as a scheduled task)
  	   - [x] User message to login and configure parsec
- 	   - [x] Symlink parsec config folder to the autologon accoun
+ 	   - [x] Symlink parsec config folder to the autologon account
+ 	   - [x] Set default hosting port to start from 8000
  	- [x] Steam
  	   - [ ] Prompt for logging in
  	   - [ ] Fix save-credentials
