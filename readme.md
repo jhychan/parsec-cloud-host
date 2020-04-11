@@ -64,7 +64,7 @@ Set-Location -Path $workingDir
     - [x] Show file extensions
  	- [x] Disable recent files
  - [x] Desktop settings
- 	[ ] Set wallpaper
+ 	- [ ] Set wallpaper
 
 ## Install Software:
  - [x] PowerShell modules
