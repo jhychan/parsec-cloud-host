@@ -12,7 +12,7 @@ Configuration ParsecDrivers
         Version = 'Latest'
     }
 
-    # Audio driver - https://www.vb-audio.com/Cable
+    # Virtual audio driver - https://www.vb-audio.com/Cable
     ChocolateyPackage 'VBCable'
     {
         Ensure = 'Present'
