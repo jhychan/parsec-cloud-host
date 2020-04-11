@@ -26,7 +26,7 @@ Cloud provider and GPU list:
    - You will have to manually install GPU drivers
 
 ## Apply the Configuration
-Connect to your machine using RDP (remote desktop). Start PowerShell with **administrator** privileges, then copy-and-paste the following command block:
+Connect to your machine using RDP (remote desktop). Start PowerShell with **administrator** privileges, then copy-and-paste the following commands:
 ```powershell
 # Force TLS 1.2, allow arbitrary script execution just for this session
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
