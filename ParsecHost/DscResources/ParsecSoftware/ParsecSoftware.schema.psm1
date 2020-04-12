@@ -70,9 +70,15 @@ Configuration ParsecSoftware
     $packageNuspec = Join-Path $PSScriptRoot "..\..\Packages\$packageName\$packageName.nuspec"
     Script 'ParsecInstallerPackage'
     {
-        SetScript = { choco.exe pack $using:packageNuspec --outputdirectory $using:packageFolder }
-        TestScript = { Test-Path -Path $using:packageFilePath }
-        GetScript = { @{ Result = Get-Item $using:packageFilePath } }
+        TestScript = {
+            Test-Path -Path $using:packageFilePath
+        }
+        GetScript = {
+            @{ Result = Get-Item $using:packageFilePath }
+        }
+        SetScript = {
+            choco.exe pack $using:packageNuspec --outputdirectory $using:packageFolder
+        }
         DependsOn = '[ChocolateySoftware]Chocolatey','[File]ParsecInstallerPackageSource'
     }
 
@@ -135,12 +141,16 @@ network_server_start_port = 8000
     # Use scheduled task to launch parsec in current session for setting up login
     Script 'ParsecRunning'
     {
+        TestScript = {
+            (Get-Process -Name 'parsecd' -EA 'SilentlyContinue') -ne $null
+        }
+        GetScript = {
+            @{ Result = Get-Process -Name 'parsecd' -EA 'SilentlyContinue' }
+        }
         SetScript = {
             Start-ScheduledTask -TaskName $using:parsecScheduledTaskName
             Start-Sleep -Seconds 5
         }
-        TestScript = { (Get-Process -Name 'parsecd' -EA 'SilentlyContinue') -ne $null }
-        GetScript = { @{ Result = Get-Process -Name 'parsecd' -EA 'SilentlyContinue' } }
         DependsOn = '[ScheduledTask]ParsecAutorun'
     }
 
@@ -148,15 +158,15 @@ network_server_start_port = 8000
     $parsecConfigDir = Join-Path $env:SystemDrive "Users\$($Credential.UserName)\AppData\Roaming\Parsec"
     Script 'ParsecUserConfigFolder'
     {
-        SetScript = {
-            New-Item -ItemType 'Junction' -Path $using:parsecConfigDir -Value $using:currentConfigDir
-        }
         TestScript = {
             # if folder exists then do nothing - either already hardlinked, or current session is the autologon account
             Test-Path $using:parsecConfigDir
         }
         GetScript = {
             @{ Result = Get-Item $using:parsecConfigDir }
+        }
+        SetScript = {
+            New-Item -ItemType 'Junction' -Path $using:parsecConfigDir -Value $using:currentConfigDir
         }
         Dependson = '[Script]ParsecRunning'
     }

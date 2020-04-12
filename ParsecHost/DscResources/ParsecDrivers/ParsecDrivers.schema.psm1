@@ -62,12 +62,16 @@ Configuration ParsecDrivers
             }
             Script 'AWSG4Certificate'
             {
+                TestScript = {
+                    Test-Path -Path (Join-Path $env:PUBLIC 'GridSwCert.txt')
+                }
+                GetScript = {
+                    @{ Result = Get-Item (Join-Path $env:PUBLIC 'GridSwCert.txt') }
+                }
                 SetScript = {
                     $certUri = 'https://s3.amazonaws.com/nvidia-gaming/GridSwCert-Windows.cert'
                     Invoke-WebRequest -Uri $certUri -UseBasicParsing -OutFile (Join-Path $env:PUBLIC 'GridSwCert.txt')
                 }
-                TestScript = { Test-Path -Path (Join-Path $env:PUBLIC 'GridSwCert.txt') }
-                GetScript = { @{ Result = Get-Item (Join-Path $env:PUBLIC 'GridSwCert.txt') } }
             }
         }
     }
