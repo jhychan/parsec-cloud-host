@@ -9,7 +9,4 @@
         '1BB1' = @{ Name = 'Quadro P4000';  PSID = 73;   PFID = 840;  NVGrid = $false; }
         '1BB0' = @{ Name = 'Quadro P5000';  PSID = 73;   PFID = 823;  NVGrid = $false; }
     }
-    '8086' = @{
-        '3EA5' = @{ Name = 'Intel HD655';   PSID = 10;   PFID = 341;  NVGrid = $false  }
-    }
 }
