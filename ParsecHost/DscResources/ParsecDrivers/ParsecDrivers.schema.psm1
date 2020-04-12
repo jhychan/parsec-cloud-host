@@ -1,4 +1,4 @@
-Import-Moudule -Name "$PSScriptRoot\GpuHelper.psm1"
+Import-Module -Name (Join-Path $PSScriptRoot 'GpuHelper.psm1')
 
 Configuration ParsecDrivers
 {
