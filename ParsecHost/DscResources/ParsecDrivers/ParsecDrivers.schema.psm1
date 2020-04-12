@@ -1,6 +1,5 @@
 Import-Moudule -Name "$PSScriptRoot\GpuHelper.psm1"
 
-
 Configuration ParsecDrivers
 {
     Param()
@@ -29,8 +28,8 @@ Configuration ParsecDrivers
         $cloudProvider = Get-CloudProvider
         $smi = Join-Path $env:ProgramFiles 'NVIDIA Corporation\NVSMI\nvidia-smi.exe'
         If(-not (Test-Path $smi)) {
-            # $downloadedFile = Download-GpuDriver -Provider $cloudProvider -Vendor $gpu.Vendor -Device $gpu.Device -ErrorAction 'Stop'
-            If($downloadedFile) {
+            $driverInstaller = Download-GpuDriver -Provider $cloudProvider -Vendor $gpu.Vendor -Device $gpu.Device -ErrorAction 'Stop'
+            If($driverInstaller) {
                 Script 'GpuDriver'
                 {
                     TestScript = {
@@ -40,7 +39,7 @@ Configuration ParsecDrivers
                         @{ Result = Get-Item -Path $using:smi }
                     }
                     SetScript = {
-                        $proc = Start-Process -FilePath $using:downloadedFile -ArgumentList '/s /n' -PassThru
+                        $proc = Start-Process -FilePath $using:driverInstaller -ArgumentList '/s /n' -PassThru
                         $proc | Wait-Process
                         Write-Verbose "GPU Driver Installer exit code: $($proc.ExitCode)"
                     }
