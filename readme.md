@@ -1,8 +1,8 @@
 # Configure Parsec Host using PowerShell DSC
-This module configures a cloud-based parsec host using [PowerShell Desired State Configuration](https://docs.microsoft.com/en-us/powershell/scripting/dsc/getting-started/wingettingstarted?view=powershell-5.1). Much of the configuration is based off the [Parsec Cloud Preparation Tool](https://github.com/jamesstringerparsec/Parsec-Cloud-Preparation-Tool). While there is no requirement for the machine to be cloud hosted, the configuration applies a number of Windows behaviour that you probably won't want on your primary machine (ie. autologon).
+This module configures a cloud-based parsec host using [PowerShell Desired State Configuration](https://docs.microsoft.com/en-us/powershell/scripting/dsc/getting-started/wingettingstarted?view=powershell-5.1). Much of the configuration is based off the [Parsec Cloud Preparation Tool](https://github.com/jamesstringerparsec/Parsec-Cloud-Preparation-Tool). While there is no requirement for the machine to be cloud hosted, this configuration applies a number of Windows settings that you probably shouldn't have on a local primary machine (ie. autologon).
 
-# Progress
-This module will automatically configure Windows, install software, some drivers and configure parsec within a single reboot. At the next reboot your chosen account will autologon and logged-on parsec hosting session will be started and ready to accept connections. The GPU driver instllation steps a work in progress.
+# What this does
+This module will automatically tweak Windows system settings, create a local account for autologon and set its password (or update the password of an existing local account), tweak user settings, install some software and drivers and configure parsec within a single reboot (you will still need to log in to parsec manually first before rebooting). At the next reboot your chosen account will autologon and logged-on parsec hosting session will be automatically started and ready to accept connections. The GPU driver instllation steps are still a work in progress.
 
 # How to use this
 ## Build a machine
@@ -24,6 +24,8 @@ Cloud provider and GPU list:
    - Quadro P5000
  - Other
    - You will have to manually install GPU drivers
+
+Parsec configuration file is set to host from port UDP 8000, so make sure you have opened up your cloud provider virtual network for your VM.
 
 ## Apply the Configuration
 Connect to your machine using RDP (remote desktop). Start PowerShell with **administrator** privileges, then copy-and-paste the following commands:
@@ -71,8 +73,6 @@ The checklist below outlines the configuration applied by this module, and track
  - [x] Disable unncessary services
  - [x] Disable unncessary scheduled tasks
  - [x] Switch to high performance power plan
- - [ ] Auto-shutdown on idle
- - [ ] Timed usage warnings
 
 ## Windows User:
  - [x] Configure local user account with autologon
@@ -100,8 +100,6 @@ The checklist below outlines the configuration applied by this module, and track
  	   - [x] Symlink parsec config folder to the autologon account
  	   - [x] Set default hosting port to start from 8000
  	- [x] Steam
- 	   - [ ] Prompt for logging in
- 	   - [ ] Fix save-credentials
 
 ## Install Drivers:
  - [x] devcon
