@@ -112,10 +112,10 @@ The checklist below outlines the configuration applied by this module, and track
  - [x] devcon
  - [x] VB-Cable
  	- [x] Windows audio services
- - [ ] Nvidia GPU
+ - [x] Nvidia GPU (needs testing)
  	- [ ] Enable NVidia GPU
  	- [ ] Disable all other GPUs
  	- [ ] Allow only one monitor
  	- [ ] Check GRID mode
- - [ ] Unsupported GPUs
-    - [ ] Warn user about parsec compat and manual driver install
+ - [x] Unsupported GPUs
+    - [x] Warn user about parsec compat and manual driver install
