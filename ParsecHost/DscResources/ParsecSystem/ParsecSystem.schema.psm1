@@ -12,6 +12,28 @@ Configuration ParsecSystem
         Name = 'High performance'
     }
 
+    # Prioritise programs
+    Registry 'PrioritisePrograms'
+    {
+        Ensure = 'Present'
+        Key = 'HKLM:\SYSTEM\CurrentControlSet\Control\PriorityControl'
+        ValueName = 'Win32PrioritySeparation'
+        ValueData = 38
+        ValueType = 'Dword'
+        Force = $true
+    }
+
+    # Disable crash dump
+    Registry 'CrashDumpDisabled'
+    {
+        Ensure = 'Present'
+        Key = 'HKLM:\SYSTEM\CurrentControlSet\Control\CrashControl'
+        ValueName = 'CrashDumpEnabled'
+        ValueData = 0
+        ValueType = 'Dword'
+        Force = $true
+    }
+
     # Harden RDP
     RemoteDesktopAdmin RemoteDesktopSettings
     {
@@ -127,5 +149,53 @@ Configuration ParsecSystem
         ValueData = 1
         ValueType = 'Dword'
         Force = $true
+    }
+
+    # Disable Scheduled tasks
+    $tasksToDisable =
+    @(
+        @{ TaskName = 'ScheduledDefrag' ; TaskPath = '\Microsoft\Windows\Defrag\' }
+        @{ TaskName = 'ProactiveScan' ; TaskPath = '\Microsoft\Windows\Chkdsk\' }
+        @{ TaskName = 'Scheduled' ; TaskPath = '\Microsoft\Windows\Diagnosis\' }
+        @{ TaskName = 'WinSAT' ; TaskPath = '\Microsoft\Windows\Maintenance\' }
+        @{ TaskName = 'StartComponentCleanup' ; TaskPath = '\Microsoft\Windows\Servicing\' }
+    )
+    $validTasks = $tasksToDisable | % { Get-ScheduledTask @PSitem -EA 'SilentlyContinue' }
+    If ($validTasks)
+    {
+        ForEach ($task in $validTasks) {
+            ScheduledTask "$($task.TaskName)Disabled"
+            {
+                TaskName = $task.TaskName
+                TaskPath = $task.TaskPath
+                Enable = $false
+            }
+        }
+    }
+
+    # Disable services
+    $servicesToDisable =
+    @(
+        "diagnosticshub.standardcollector.service"
+        "DiagTrack"
+        "dmwappushservice"
+        "gupdate"
+        "LanmanServer"
+        "lfsvc"
+        "MapsBroker"
+        "RemoteAccess"
+        "SharedAccess"
+        "Spooler"
+        "TrkWks"
+        "WbioSrvc"
+        "XblAuthManager"
+        "XblGameSave"
+    )
+    $validServices = $servicesToDisable | Get-Service -EA 'SilentlyContinue'
+    ServiceSet "DisabledServices"
+    {
+        Name = $validServices.Name
+        StartupType = 'Disabled'
+        State = 'Stopped'
     }
 }

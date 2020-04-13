@@ -1,12 +1,12 @@
 # Configure Parsec Host using PowerShell DSC
-This module configures a parsec host machine using [PowerShell Desired State Configuration](https://docs.microsoft.com/en-us/powershell/scripting/dsc/getting-started/wingettingstarted?view=powershell-5.1). Most of the work here is based off the hard work done by the author of the [Parsec Cloud Preparation Tool](https://github.com/jamesstringerparsec/Parsec-Cloud-Preparation-Tool). There is no requirement for the machine to be cloud hosted - this module can be applied to any machine you want configured as a parsec host.
+This module configures a cloud-based parsec host using [PowerShell Desired State Configuration](https://docs.microsoft.com/en-us/powershell/scripting/dsc/getting-started/wingettingstarted?view=powershell-5.1). Much of the configuration is based off the [Parsec Cloud Preparation Tool](https://github.com/jamesstringerparsec/Parsec-Cloud-Preparation-Tool). While there is no requirement for the machine to be cloud hosted, the configuration applies a number of Windows behaviour that you probably won't want on your primary machine (ie. autologon).
 
-# Status
-Still in a very alpha state, so not yet on par with the Parsec Cloud Preparation Tool. Nvidia driver install and parsec post-install config are the key functions still being worked on.
+# Progress
+This module will automatically configure Windows, install software, some drivers and configure parsec within a single reboot. At the next reboot your chosen account will autologon and logged-on parsec hosting session will be started and ready to accept connections. The GPU driver instllation steps a work in progress.
 
 # How to use this
 ## Build a machine
-This module has been developed to simplfy the deployment of parsec to cloud-hosted Window 10 or Windows Server 2016/2019 VMs with NVIDIA GPUs. However there is no hard requirement for the machine to be cloud hosted, nor for the machine to be limited to those versions of Windows and GPUs. The only technical requirement for this module to work correctly is that your choice of Windows must have PowerShell 5.1 or higher installed/available, and of course for Parsec's minimum requirements to be met.
+This module has been developed to simplfy the deployment of parsec to cloud-hosted Window 10 or Windows Server 2016/2019 VMs with NVIDIA GPUs. While this is not a hard requirement, for the module to work correctly your choice of Windows must have PowerShell 5.1 or higher installed/available, and of course for Parsec's minimum requirements to be met.
 
 Cloud provider and GPU list:
  - Azure
@@ -64,8 +64,13 @@ The checklist below outlines the configuration applied by this module, and track
  - [x] Disable Automatic Updates (Windows)
  - [x] Enable automatic NTP sync
  - [x] Disable New Network window
+ - [x] Prioritise foreground processes
  - [x] Disable Server Manager at logon
+ - [x] Disable crash dump
  - [x] Disable lockscreen
+ - [x] Disable unncessary services
+ - [x] Disable unncessary scheduled tasks
+ - [x] Switch to high performance power plan
  - [ ] Auto-shutdown on idle
  - [ ] Timed usage warnings
 
@@ -74,6 +79,7 @@ The checklist below outlines the configuration applied by this module, and track
  - [x] Disable IE proxy settings
  - [x] Automatically close apps on shutdown
  - [x] Disable mouse acceleration
+ - [x] Set visual settings to best performance
  - [x] Windows explorer settings
     - [x] Show hidden files
     - [x] Show file extensions

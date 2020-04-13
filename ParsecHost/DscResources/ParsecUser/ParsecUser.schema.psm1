@@ -185,6 +185,17 @@ Configuration ParsecUser
         DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
+    Registry "Explorer-BestPerformanceVisuals"
+    {
+        Ensure = 'Present'
+        Key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects'
+        ValueName = 'VisualFXSetting'
+        ValueData = 2
+        ValueType = 'Dword'
+        Force = $true
+        DependsOn = '[Group]Group-Admin-Parsec'
+        PsDscRunAsCredential = $Credential
+    }
 
     # Clear last logged on user
     Registry "Clear-LastLoggedOnDisplayName"
