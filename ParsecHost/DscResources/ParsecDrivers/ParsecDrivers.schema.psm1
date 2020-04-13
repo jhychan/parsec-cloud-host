@@ -62,12 +62,15 @@ Configuration ParsecDrivers
 
     # Nvidia driver
     $gpu = Get-SupportedGpu
-    If($gpu) {
+    If($gpu)
+    {
         $cloudProvider = Get-CloudProvider
         $smi = Join-Path $env:ProgramFiles 'NVIDIA Corporation\NVSMI\nvidia-smi.exe'
-        If(-not (Test-Path $smi)) {
-            $driverInstaller = Download-GpuDriver -Provider $cloudProvider -Vendor $gpu.Vendor -Device $gpu.Device -ErrorAction 'Stop'
-            If($driverInstaller) {
+        If(-not (Test-Path $smi))
+        {
+            # $driverInstaller = Download-GpuDriver -Provider $cloudProvider -Vendor $gpu.Vendor -Device $gpu.Device -ErrorAction 'Stop'
+            If($driverInstaller)
+            {
                 Script 'GpuDriver'
                 {
                     TestScript = {
@@ -86,7 +89,8 @@ Configuration ParsecDrivers
         }
         
         # AWS G4 has extra configs required
-        If($gpuDriverLookup.$cloudProvider.$($gpu.Vendor).$($gpu.Device) -eq 'AWS-G4') {
+        If($gpuDriverLookup.$cloudProvider.$($gpu.Vendor).$($gpu.Device) -eq 'AWS-G4')
+        {
             # https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/install-nvidia-driver.html#nvidia-gaming-driver
             Registry 'AWSG4vGamgingMarketplace'
             {
