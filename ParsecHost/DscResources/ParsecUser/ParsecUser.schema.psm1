@@ -197,6 +197,54 @@ Configuration ParsecUser
         PsDscRunAsCredential = $Credential
     }
 
+    # Disable accessibility keyboard shortcuts
+    Registry "StickyKeysShortcutsDisabled"
+    {
+        Ensure = 'Present'
+        Key = 'HKCU:\Control Panel\Accessibility\StickyKeys'
+        ValueName = 'Flags'
+        ValueData = '506'
+        ValueType = 'String'
+        Force = $true
+        DependsOn = '[Group]Group-Admin-Parsec'
+        PsDscRunAsCredential = $Credential
+    }
+    Registry "OSKShortcutsDisabled"
+    {
+        Ensure = 'Present'
+        Key = 'HKCU:\Control Panel\Accessibility\Keyboard Response'
+        ValueName = 'Flags'
+        ValueData = '122'
+        ValueType = 'String'
+        Force = $true
+        DependsOn = '[Group]Group-Admin-Parsec'
+        PsDscRunAsCredential = $Credential
+    }
+    Registry "ToggleKeysShortcutsDisabled"
+    {
+        Ensure = 'Present'
+        Key = 'HKCU:\Control Panel\Accessibility\ToggleKeys'
+        ValueName = 'Flags'
+        ValueData = '58'
+        ValueType = 'String'
+        Force = $true
+        DependsOn = '[Group]Group-Admin-Parsec'
+        PsDscRunAsCredential = $Credential
+    }
+
+    # Disable system tray hiding
+    Registry "SystemTrayHidingDisabled"
+    {
+        Ensure = 'Present'
+        Key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer'
+        ValueName = 'EnableAutoTray'
+        ValueData = 0
+        ValueType = 'Dword'
+        Force = $true
+        DependsOn = '[Group]Group-Admin-Parsec'
+        PsDscRunAsCredential = $Credential
+    }
+
     # Clear last logged on user
     Registry "Clear-LastLoggedOnDisplayName"
     {

@@ -25,7 +25,7 @@ Cloud provider and GPU list:
  - Other
    - You will have to manually install GPU drivers
 
-Parsec configuration file is set to host from port UDP 8000, so make sure you have opened up your cloud provider virtual network for your VM.
+Parsec configuration file is set to host from port UDP 8000, so make sure you have opened up an appropriately sized UDP port range on the virtual network to your parsec host VM.
 
 ## Apply the Configuration
 Connect to your machine using RDP (remote desktop). Start PowerShell with **administrator** privileges, then copy-and-paste the following commands:
@@ -72,6 +72,7 @@ The checklist below outlines the configuration applied by this module, and track
  - [x] Disable lockscreen
  - [x] Disable unncessary services
  - [x] Disable unncessary scheduled tasks
+ - [x] Disable telemetry
  - [x] Switch to high performance power plan
 
 ## Windows User:
@@ -79,6 +80,7 @@ The checklist below outlines the configuration applied by this module, and track
  - [x] Disable IE proxy settings
  - [x] Automatically close apps on shutdown
  - [x] Disable mouse acceleration
+ - [x] Disable accessibility keyboard shortcuts
  - [x] Set visual settings to best performance
  - [x] Windows explorer settings
     - [x] Show hidden files
@@ -86,6 +88,7 @@ The checklist below outlines the configuration applied by this module, and track
  	- [x] Disable recent files
  - [x] Desktop settings
  	- [x] Set wallpaper
+  - [x] Disable system tray hiding
 
 ## Install Software:
  - [x] PowerShell modules

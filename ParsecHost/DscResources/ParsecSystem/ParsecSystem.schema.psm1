@@ -151,6 +151,17 @@ Configuration ParsecSystem
         Force = $true
     }
 
+    # Disable telemetry
+    Registry "Telemetry-Disabled"
+    {
+        Ensure = 'Present'
+        Key = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection'
+        ValueName = 'AllowTelemetry'
+        ValueData = 0
+        ValueType = 'Dword'
+        Force = $true
+    }
+
     # Disable Scheduled tasks
     $tasksToDisable =
     @(
