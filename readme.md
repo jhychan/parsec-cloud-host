@@ -106,6 +106,7 @@ The checklist below outlines the configuration applied by this module, and track
 ## Install Drivers:
  - [x] devcon
  - [x] VB-Cable
+ 	- [x] Windows audio services
  - [ ] Nvidia GPU
  	- [ ] Enable NVidia GPU
  	- [ ] Disable all other GPUs
