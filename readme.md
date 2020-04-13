@@ -52,6 +52,10 @@ Set-Location -Path $workingDir
 .\parsec-cloud-host-master\Apply-ParsecHostDsc.ps1 -Verbose
 ```
 
+The script will proceed to configure the machine. You should be prompted for the following:
+* Early on: Username/password for the user account you want autologon configured for
+* Towards the end: message to login to Parsec before rebooting
+* Very end: reboot the machine
 
 # Progress Tracker
 The checklist below outlines the configuration applied by this module, and tracks configuration capabilities that are under development.
