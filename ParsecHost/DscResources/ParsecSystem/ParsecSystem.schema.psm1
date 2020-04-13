@@ -191,7 +191,6 @@ Configuration ParsecSystem
         "DiagTrack"
         "dmwappushservice"
         "gupdate"
-        "LanmanServer"
         "lfsvc"
         "MapsBroker"
         "RemoteAccess"
