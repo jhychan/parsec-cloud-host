@@ -6,7 +6,7 @@ This module will automatically tweak Windows system settings, create a local acc
 
 # How to use this
 ## Build a machine
-This module has been developed to simplfy the deployment of parsec to cloud-hosted Window 10 or Windows Server 2016/2019 VMs with NVIDIA GPUs. While this is not a hard requirement, for the module to work correctly your choice of Windows must have PowerShell 5.1 or higher installed/available, and of course for Parsec's minimum requirements to be met.
+This module is intended to prepare a parsec cloud-hosted Window 10 or Windows Server 2016/2019 VMs with NVIDIA GPU. While the OS version is not strictly required, your choice of Windows must have PowerShell 5.1 or higher installed/available, and of course for Parsec's minimum requirements to be met.
 
 Cloud provider and GPU list:
  - Azure
