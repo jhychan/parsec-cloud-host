@@ -15,19 +15,12 @@ Configuration ParsecUser
         UserName = $Credential.UserName
         Password = $Credential
     }
-    Group "Group-User-Parsec"
-    {
-        Ensure = 'Present'
-        GroupName = 'Users'
-        MembersToInclude = $Credential.UserName
-        DependsOn = '[User]Account-User-Parsec'
-    }
     Group "Group-Admin-Parsec"
     {
         Ensure = 'Present'
         GroupName = 'Administrators'
         MembersToInclude = $Credential.UserName
-        DependsOn = '[Group]Group-User-Parsec'
+        DependsOn = '[User]Account-User-Parsec'
     }
 
     # Parsec wallpaper
