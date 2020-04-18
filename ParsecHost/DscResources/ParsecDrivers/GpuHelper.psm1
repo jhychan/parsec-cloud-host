@@ -70,17 +70,25 @@ Function Download-GpuDriver {
         }
         'AWS-G4' {
             # https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/install-nvidia-driver.html#nvidia-gaming-driver
+            try {
+                Set-AWSCredential -ProfileName 'parsecAWSCreds'
+            }
+            catch {
+                $awsCredentials = Get-Credential -Message 'Please provide your AWS Access key and secret key'
+                Set-AWSCredential -AccessKey $awsCredentials.UserName -SecretKey $awsCredentials.GetNetworkCredential().Password -StoreAs 'parsecAWSCreds'
+                Set-AWSCredential -ProfileName 'parsecAWSCreds'
+            }
             $Bucket = "nvidia-gaming"
             $KeyPrefix = "windows/latest"
             $Objects = Get-S3Object -BucketName $Bucket -KeyPrefix $KeyPrefix -Region 'us-east-1'
             ForEach ($Object in $Objects) {
-                $LocalFileName = $Object.Key
+                $LocalFileName = Split-Path -Leaf $Object.Key
                 If ($LocalFileName -ne '' -and $Object.Size -ne 0) {
                     $LocalFilePath = Join-Path $env:Temp $LocalFileName
                     Copy-S3Object -BucketName $Bucket -Key $Object.Key -LocalFile $LocalFilePath -Region 'us-east-1'
                     $file = Get-Item $LocalFilePath
                     If($file.Extension -eq '.zip') {
-                        $extractionPath = Join-Path $env:Path $file.BaseName
+                        $extractionPath = Join-Path $env:Temp $file.BaseName
                         $file | Expand-Archive -DestinationPath $extractionPath
                         Remove-Item $file
                         $installer = Get-ChildItem -Path $extractionPath | ? { $_.Extension -eq '.exe' -and $_.Name -like '*win10*' }
