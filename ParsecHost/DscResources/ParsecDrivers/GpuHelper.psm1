@@ -85,13 +85,14 @@ Function Download-GpuDriver {
                 $LocalFileName = Split-Path -Leaf $Object.Key
                 If ($LocalFileName -ne '' -and $Object.Size -ne 0) {
                     $LocalFilePath = Join-Path $env:Temp $LocalFileName
-                    Copy-S3Object -BucketName $Bucket -Key $Object.Key -LocalFile $LocalFilePath -Region 'us-east-1'
+                    Copy-S3Object -BucketName $Bucket -Key $Object.Key -LocalFile $LocalFilePath -Region 'us-east-1' | Out-Null
                     $file = Get-Item $LocalFilePath
                     If($file.Extension -eq '.zip') {
                         $extractionPath = Join-Path $env:Temp $file.BaseName
-                        $file | Expand-Archive -DestinationPath $extractionPath
-                        Remove-Item $file
-                        $installer = Get-ChildItem -Path $extractionPath | ? { $_.Extension -eq '.exe' -and $_.Name -like '*win10*' }
+                        Remove-Item -Recurse -Force -Path $extractionPath -EA 'SilentlyContinue'
+                        $file | Expand-Archive -DestinationPath $extractionPath -Force | Out-Null
+                        Remove-Item $file -EA 'SilentlyContinue'
+                        $installer = Get-ChildItem -Recurse -Path $extractionPath | ? { $_.Extension -eq '.exe' -and $_.Name -like '*win10*' }
                         return $installer.FullName
                     }
                 }
