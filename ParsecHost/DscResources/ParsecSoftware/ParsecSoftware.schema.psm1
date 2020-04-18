@@ -112,10 +112,15 @@ Configuration ParsecSoftware
 
 # Example:
 # encoder_bitrate = 10
-
 app_run_level = 3
-network_server_start_port = 8000
 
+encoder_bitrate=50
+encoder_min_bitrate = 20
+#encoder_vbv_max = 500
+#encoder_min_qp=5
+
+server_audio_cancel=0
+network_server_start_port = 8000
 "@
         DependsOn = '[ChocolateyPackage]Parsec'
     }

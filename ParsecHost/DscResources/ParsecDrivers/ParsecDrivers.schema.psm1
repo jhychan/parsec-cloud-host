@@ -68,7 +68,7 @@ Configuration ParsecDrivers
         $smi = Join-Path $env:ProgramFiles 'NVIDIA Corporation\NVSMI\nvidia-smi.exe'
         If(-not (Test-Path $smi))
         {
-            # $driverInstaller = Download-GpuDriver -Provider $cloudProvider -Vendor $gpu.Vendor -Device $gpu.Device -ErrorAction 'Stop'
+            $driverInstaller = Download-GpuDriver -Provider $cloudProvider -Vendor $gpu.Vendor -Device $gpu.Device -ErrorAction 'Stop'
             If($driverInstaller)
             {
                 Script 'GpuDriver'
