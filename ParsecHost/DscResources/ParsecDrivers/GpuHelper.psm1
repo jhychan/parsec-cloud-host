@@ -153,3 +153,6 @@ Function Download-GpuDriver {
         }
     }
 }
+
+Export-ModuleMember -Variable 'gpuDeviceLookup','gpuDriverLookup'
+Export-ModuleMember -Function *
