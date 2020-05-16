@@ -86,7 +86,7 @@ network_server_start_port = 8000
     $users = Get-LocalUser | ? { $_.Enabled }
     ForEach($username in $users.Name) {
         $parsecConfigDir = Join-Path $env:SystemDrive "Users\$username\AppData\Roaming\Parsec"
-        Script 'ParsecUserConfigFolder'
+        Script "ParsecUserConfigFolder$username"
         {
             TestScript = {
                 # if folder exists then do nothing - either already hardlinked, or current session is the autologon account
