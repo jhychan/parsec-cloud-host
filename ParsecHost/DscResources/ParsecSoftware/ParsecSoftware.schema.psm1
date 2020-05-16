@@ -101,6 +101,7 @@ network_server_start_port = 8000
             Dependson = '[File]ParsecConfigFile'
         }
     }
+    $dependsOnList = $users.Name | % { "[Script]ParsecUserConfigFolder$username" }
 
     # Generated parsec chocolatey package
     $packageName = 'parsecgaming'
@@ -141,7 +142,7 @@ network_server_start_port = 8000
         ChocolateyOptions = @{
             'source' = $packageSourceFolder
         }
-        DependsOn = '[Script]ParsecInstallerPackage','[Script]ParsecUserConfigFolder'
+        DependsOn = '[Script]ParsecInstallerPackage' + $dependsOnList
     }
 
     # Configure parsec autolaunch via scheduled task for the logged in user
