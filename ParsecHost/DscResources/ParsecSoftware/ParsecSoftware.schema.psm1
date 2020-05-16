@@ -101,7 +101,7 @@ network_server_start_port = 8000
             Dependson = '[File]ParsecConfigFile'
         }
     }
-    $dependsOnList = $users.Name | % { "[Script]ParsecUserConfigFolder$username" }
+    $dependsOnList = $users.Name | % { "[Script]ParsecUserConfigFolder$_" }
 
     # Generated parsec chocolatey package
     $packageName = 'parsecgaming'
