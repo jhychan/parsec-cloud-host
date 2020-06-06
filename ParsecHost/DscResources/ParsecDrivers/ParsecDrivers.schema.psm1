@@ -109,7 +109,7 @@ Configuration ParsecDrivers
                 }
                 SetScript = {
                     $certUri = 'https://s3.amazonaws.com/nvidia-gaming/GridSwCert-Windows.cert'
-                    Invoke-WebRequest -Uri $certUri -UseBasicParsing -OutFile (Join-Path $env:PUBLIC 'GridSwCert.txt')
+                    Invoke-WebRequest -Uri $certUri -UseBasicParsing -OutFile (Join-Path $env:PUBLIC 'Documents\GridSwCert.txt')
                 }
             }
         }
