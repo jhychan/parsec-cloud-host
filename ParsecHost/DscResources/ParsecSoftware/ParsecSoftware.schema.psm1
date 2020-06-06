@@ -142,7 +142,7 @@ network_server_start_port = 8000
         ChocolateyOptions = @{
             'source' = $packageSourceFolder
         }
-        DependsOn = '[Script]ParsecInstallerPackage' + $dependsOnList
+        DependsOn = '[Script]ParsecInstallerPackage', $dependsOnList
     }
 
     # Configure parsec autolaunch via scheduled task for the logged in user
