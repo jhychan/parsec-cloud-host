@@ -83,8 +83,12 @@ network_server_start_port = 8000
     }
 
     # Symlink the config directory for all enabled users
-    $users = Get-LocalUser | ? { $_.Enabled }
-    ForEach($username in $users.Name) {
+    $users = @(Get-LocalUser | ? { $_.Enabled } | Select-Object -ExpandProperty Name)
+    If ($Credential.Username -notin $users) {
+        $users += $Credential.Username
+    }
+
+    ForEach($username in $users) {
         $parsecConfigDir = Join-Path $env:SystemDrive "Users\$username\AppData\Roaming\Parsec"
         Script "ParsecUserConfigFolder$username"
         {
@@ -101,7 +105,6 @@ network_server_start_port = 8000
             Dependson = '[File]ParsecConfigFile'
         }
     }
-    $dependsOnList = $users.Name | % { "[Script]ParsecUserConfigFolder$_" }
 
     # Generated parsec chocolatey package
     $packageName = 'parsecgaming'
@@ -134,6 +137,8 @@ network_server_start_port = 8000
     }
 
     # Install parsec using the generated package
+    $dependsOnList = @($users | % { "[Script]ParsecUserConfigFolder$_" })
+    $dependsOnList += '[Script]ParsecInstallerPackage'
     ChocolateyPackage 'Parsec'
     {
         Ensure = 'Present'
@@ -142,7 +147,7 @@ network_server_start_port = 8000
         ChocolateyOptions = @{
             'source' = $packageSourceFolder
         }
-        DependsOn = '[Script]ParsecInstallerPackage', $dependsOnList
+        DependsOn = $dependsOnList
     }
 
     # Configure parsec autolaunch via scheduled task for the logged in user
