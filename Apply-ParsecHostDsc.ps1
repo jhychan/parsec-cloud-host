@@ -16,7 +16,7 @@ Write-Host -ForegroundColor 'Green' 'Checking DSC dependencies'
 If(-not (Get-PackageProvider -ListAvailable -Name 'NuGet' -EA SilentlyContinue)) {
     Install-PackageProvider -Name 'NuGet' -Force -Verbose | Out-Null
 }
-$requiredModules = 'PowerShellGet','PSDscResources','ComputerManagementDsc','chocolatey'
+$requiredModules = 'PowerShellGet','PSDscResources','ComputerManagementDsc','chocolatey','DeviceManagement'
 ForEach($moduleName in $requiredModules) {
     If(-not (Get-Module -ListAvailable -Name $moduleName)) {
         Install-Module -Name $moduleName -Force -Verbose | Out-Null

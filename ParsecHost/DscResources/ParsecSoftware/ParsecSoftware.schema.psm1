@@ -41,6 +41,7 @@ Configuration ParsecSoftware
         Name = 'googlechrome'
         Version = 'Latest'
         DependsOn = '[ChocolateySoftware]Chocolatey'
+        ChocolateyOptions =  @{ IgnoreChecksum = $true } # ocassionaly required between Chrome releases
     }
 
     # Who doesn't love steam ;)
@@ -79,6 +80,7 @@ encoder_min_bitrate = 20
 
 server_audio_cancel=0
 network_server_start_port = 8000
+server_admin_mute = 0
 "@
     }
 

@@ -7,7 +7,6 @@ Configuration ParsecHostLcm
         {
             ActionAfterReboot = 'ContinueConfiguration'
             ConfigurationMode = 'ApplyOnly'
-            ConfigurationModeFrequencyMins = '60'
             RebootNodeIfNeeded = $false
             RefreshMode = 'Push'
         }
