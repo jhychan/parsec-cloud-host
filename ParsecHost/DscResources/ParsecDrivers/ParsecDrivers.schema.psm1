@@ -90,7 +90,7 @@ Configuration ParsecDrivers
         If($gpuDriverLookup.$cloudProvider.$($gpu.Vendor).$($gpu.Device) -eq 'AWS-G4')
         {
             # https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/install-nvidia-driver.html#nvidia-gaming-driver
-            Registry 'AWSG4vGamgingMarketplace'
+            Registry 'NvGamingMarketplace'
             {
                 Ensure = 'Present'
                 Key = 'HKLM:\SOFTWARE\NVIDIA Corporation\Global'
@@ -99,7 +99,7 @@ Configuration ParsecDrivers
                 ValueType = 'Dword'
                 Force = $true
             }
-            Script 'AWSG4Certificate'
+            Script 'NvGridLicense'
             {
                 TestScript = {
                     Test-Path -Path (Join-Path $env:PUBLIC 'GridSwCert.txt')
