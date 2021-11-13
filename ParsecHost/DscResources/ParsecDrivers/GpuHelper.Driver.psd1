@@ -9,7 +9,8 @@
         '10DE' = @{
             '118A' = 'Nvidia'
             '13F2' = 'AWS'
-            '1EB8' = 'AWS-G4'
+            '1EB8' = 'AWS-G'
+            '2237' = 'AWS-G'
         }
     }
     'GCP' = @{

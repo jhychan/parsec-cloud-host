@@ -108,7 +108,7 @@ Configuration ParsecDrivers
                     @{ Result = Get-Item (Join-Path $env:PUBLIC 'GridSwCert.txt') }
                 }
                 SetScript = {
-                    $certUri = 'https://s3.amazonaws.com/nvidia-gaming/GridSwCert-Windows.cert'
+                    $certUri = 'https://nvidia-gaming.s3.amazonaws.com/GridSwCert-Archive/GridSwCertWindows_2021_10_2.cert'
                     Invoke-WebRequest -Uri $certUri -UseBasicParsing -OutFile (Join-Path $env:PUBLIC 'Documents\GridSwCert.txt')
                 }
             }

@@ -68,7 +68,7 @@ Function Download-GpuDriver {
             [System.Net.WebClient]::new().DownloadFile($downloadUri, $downloadPath)
             return $downloadPath
         }
-        'AWS-G4' {
+        'AWS-G' {
             # https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/install-nvidia-driver.html#nvidia-gaming-driver
             try {
                 Set-AWSCredential -ProfileName 'parsecAWSCreds'
