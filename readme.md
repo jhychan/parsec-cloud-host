@@ -51,7 +51,7 @@ Get-Item $zipFile | Expand-Archive -DestinationPath $workingDir
 
 # Apply the configuration
 Set-Location -Path $workingDir
-.\parsec-cloud-host-$branch\Apply-ParsecHostDsc.ps1 -Verbose
+& ".\parsec-cloud-host-$branch\Apply-ParsecHostDsc.ps1" -Verbose
 ```
 
 The script will proceed to configure the machine. You should be prompted for the following:
