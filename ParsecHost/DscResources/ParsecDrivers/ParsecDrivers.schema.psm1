@@ -86,8 +86,8 @@ Configuration ParsecDrivers
             }
         }
         
-        # AWS G4 has extra configs required
-        If($gpuDriverLookup.$cloudProvider.$($gpu.Vendor).$($gpu.Device) -eq 'AWS-G4')
+        # AWS G4/G5 has extra configs required
+        If($gpuDriverLookup.$cloudProvider.$($gpu.Vendor).$($gpu.Device) -eq 'AWS-G')
         {
             # https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/install-nvidia-driver.html#nvidia-gaming-driver
             Registry 'NvGamingMarketplace'
@@ -112,6 +112,20 @@ Configuration ParsecDrivers
                     Invoke-WebRequest -Uri $certUri -UseBasicParsing -OutFile (Join-Path $env:PUBLIC 'Documents\GridSwCert.txt')
                 }
             }
+        }
+    }
+
+    # Disable Microsoft Basic Display Adapter
+    Script 'DisableBasicDisplay' {
+        TestScript = {
+            $basicDisplay = Get-Device -DeviceClass GUID_DEVCLASS_DISPLAY | Where-Object Service -eq 'BasicDisplay'
+            return ($basicDisplay.ConfigurationFlags -eq 'CONFIGFLAG_DISABLED')
+        }
+        GetScript = {
+            @{ Result = Get-Device -DeviceClass GUID_DEVCLASS_DISPLAY | Where-Object Service -eq 'BasicDisplay' }
+        }
+        SetScript = {
+            Get-Device -DeviceClass GUID_DEVCLASS_DISPLAY | Where-Object Service -eq 'BasicDisplay' | Disable-Device
         }
     }
 }
