@@ -36,21 +36,22 @@ Connect to your machine using RDP (remote desktop). Start PowerShell with **admi
 Set-ExecutionPolicy -ExecutionPolicy 'Bypass' -Scope 'Process' -Force
 
 # Set some paths
+$branch = 'master'
 $workingDir = $env:Temp
 $zipFile = Join-Path $workingDir 'parsec-cloud-host.zip'
-$extractedPath = Join-Path $workingDir 'parsec-cloud-host-master'
+$extractedPath = Join-Path $workingDir "parsec-cloud-host-$branch"
 
 # Clean up any previous runs
 Remove-Item -Path $zipFile -EA SilentlyContinue
 Remove-Item -Recurse -Path $extractedPath -EA SilentlyContinue
 
 # Download zip of the repo and extract
-[System.Net.WebClient]::new().DownloadFile('https://github.com/jhychan/parsec-cloud-host/archive/refs/heads/update-2021.zip', $zipFile)
+[System.Net.WebClient]::new().DownloadFile("https://github.com/jhychan/parsec-cloud-host/archive/refs/heads/$branch.zip", $zipFile)
 Get-Item $zipFile | Expand-Archive -DestinationPath $workingDir
 
 # Apply the configuration
 Set-Location -Path $workingDir
-.\parsec-cloud-host-master\Apply-ParsecHostDsc.ps1 -Verbose
+.\parsec-cloud-host-$branch\Apply-ParsecHostDsc.ps1 -Verbose
 ```
 
 The script will proceed to configure the machine. You should be prompted for the following:
