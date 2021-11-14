@@ -1,8 +1,8 @@
 # Configure Parsec Host using PowerShell DSC
-This module configures a cloud-based parsec host using [PowerShell Desired State Configuration](https://docs.microsoft.com/en-us/powershell/scripting/dsc/getting-started/wingettingstarted?view=powershell-5.1). Much of the configuration is based off the [Parsec Cloud Preparation Tool](https://github.com/jamesstringerparsec/Parsec-Cloud-Preparation-Tool). While there is no requirement for the machine to be cloud hosted, this configuration applies a number of Windows settings that you probably shouldn't have on a local primary machine (ie. autologon).
+This module configures a cloud-based parsec host using [PowerShell Desired State Configuration](https://docs.microsoft.com/en-us/powershell/scripting/dsc/getting-started/wingettingstarted?view=powershell-5.1). Much of the configuration is based off the [Parsec Cloud Preparation Tool](https://github.com/jamesstringerparsec/Parsec-Cloud-Preparation-Tool).
 
 # What this does
-This module will automatically tweak Windows system settings, create a local account for autologon and set its password (or update the password of an existing local account), tweak user settings, install some software and drivers and configure parsec within a single reboot (you will still need to log in to parsec manually first before rebooting). At the next reboot your chosen account will autologon and parsec hosting session will be automatically started and ready to accept connections. The GPU driver installation steps are still a work in progress.
+This module will automatically set number of Windows system settings, user settings, install some software and drivers and configure parsec within a single reboot. Parsec is installed in Shared mode, so you will need to log in to parsec manually first before rebooting.
 
 # How to use this
 ## Build a machine
@@ -16,7 +16,7 @@ Cloud provider and GPU list:
    - Tesla M60
    - Tesla P4
    - Tesla T4
-   - Ampere A10
+   - A10G
  - Google Cloud
    - Tesla P4
    - Tesla T4
@@ -45,7 +45,7 @@ Remove-Item -Path $zipFile -EA SilentlyContinue
 Remove-Item -Recurse -Path $extractedPath -EA SilentlyContinue
 
 # Download zip of the repo and extract
-[System.Net.WebClient]::new().DownloadFile('https://github.com/jhychan/parsec-cloud-host/archive/master.zip', $zipFile)
+[System.Net.WebClient]::new().DownloadFile('https://github.com/jhychan/parsec-cloud-host/archive/refs/heads/update-2021.zip', $zipFile)
 Get-Item $zipFile | Expand-Archive -DestinationPath $workingDir
 
 # Apply the configuration
