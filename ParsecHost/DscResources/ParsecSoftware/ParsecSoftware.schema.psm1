@@ -1,10 +1,6 @@
 Configuration ParsecSoftware
 {
-    Param(
-        [Parameter(Mandatory=$true)]
-        [ValidateNotNullOrEmpty()]
-        [PSCredential]$Credential
-    )
+    Param()
 
     Import-DscResource -ModuleName 'chocolatey'
     Import-DscResource -ModuleName 'ComputerManagementDsc'
@@ -53,61 +49,6 @@ Configuration ParsecSoftware
         DependsOn = '[ChocolateySoftware]Chocolatey'
     }
 
-    # Set up shared parsec config directory
-    $currentConfigDir = Join-Path $env:ProgramData 'Parsec'
-    $currentConfigPath = Join-Path $currentConfigDir 'config.txt'
-    File 'ParsecConfigFile'
-    {
-        Ensure = 'Present'
-        DestinationPath = $currentConfigPath
-        Type = 'File'
-        Contents = @"
-# All configuration settings must appear on a new line.
-# All whitespace, besides the newline character '\n', is ignored.
-# All settings passed via the command line take precedence.
-# The configuration file will be overwritten by Parsec when changing settings,
-#   so if you edit this file while Parsec is running, make sure to save this file
-#   and restart Parsec immediately so your changes are preserved.
-
-# Example:
-# encoder_bitrate = 10
-app_run_level = 3
-
-encoder_bitrate=50
-encoder_min_bitrate = 20
-#encoder_vbv_max = 500
-#encoder_min_qp=5
-
-server_audio_cancel=0
-network_server_start_port = 8000
-server_admin_mute = 0
-"@
-    }
-
-    # Symlink the config directory for all enabled users
-    $users = @(Get-LocalUser | ? { $_.Enabled } | Select-Object -ExpandProperty Name)
-    If ($Credential.Username -notin $users) {
-        $users += $Credential.Username
-    }
-
-    ForEach($username in $users) {
-        $parsecConfigDir = Join-Path $env:SystemDrive "Users\$username\AppData\Roaming\Parsec"
-        Script "ParsecUserConfigFolder$username"
-        {
-            TestScript = {
-                # if folder exists then do nothing - either already hardlinked, or current session is the autologon account
-                Test-Path $using:parsecConfigDir
-            }
-            GetScript = {
-                @{ Result = Get-Item $using:parsecConfigDir }
-            }
-            SetScript = {
-                New-Item -ItemType 'Junction' -Path $using:parsecConfigDir -Value $using:currentConfigDir
-            }
-            Dependson = '[File]ParsecConfigFile'
-        }
-    }
-
     # Generated parsec chocolatey package
     $packageName = 'parsecgaming'
     $packageVersion = '1.0'
@@ -139,8 +80,6 @@ server_admin_mute = 0
     }
 
     # Install parsec using the generated package
-    $dependsOnList = @($users | % { "[Script]ParsecUserConfigFolder$_" })
-    $dependsOnList += '[Script]ParsecInstallerPackage'
     ChocolateyPackage 'Parsec'
     {
         Ensure = 'Present'
@@ -149,40 +88,39 @@ server_admin_mute = 0
         ChocolateyOptions = @{
             'source' = $packageSourceFolder
         }
-        DependsOn = $dependsOnList
+        # DependsOn = $dependsOnList
+        DependsOn = '[Script]ParsecInstallerPackage'
     }
 
-    # Configure parsec autolaunch via scheduled task for the logged in user
-    $parsecScheduledTaskName = 'Parsec'
-    $parsecFilePath = Join-Path $env:ProgramFiles 'Parsec\parsecd.exe'
-    $dummyPassword = ConvertTo-SecureString -AsPlainText -String ' ' -Force
-    $builtinUsers = [PSCredential]::New('Users',$dummyPassword)
-    ScheduledTask 'ParsecAutorun'
+    # Pre-configured parsec config
+    $currentConfigDir = Join-Path $env:ProgramData 'Parsec'
+    $currentConfigPath = Join-Path $currentConfigDir 'config.txt'
+    File 'ParsecConfigFile'
     {
         Ensure = 'Present'
-        TaskName = $parsecScheduledTaskName
-        ExecuteAsCredential = $builtinUsers
-        LogonType = 'Group'
-        RunLevel = 'Highest'
-        ScheduleType = 'AtLogOn'
-        ActionExecutable = $parsecFilePath
-        MultipleInstances = 'IgnoreNew'
-        DependsOn = '[ChocolateyPackage]Parsec'
-    }
+        DestinationPath = $currentConfigPath
+        Type = 'File'
+        Contents = @"
+# All configuration settings must appear on a new line.
+# All whitespace, besides the newline character '\n', is ignored.
+# All settings passed via the command line take precedence.
+# The configuration file will be overwritten by Parsec when changing settings,
+#   so if you edit this file while Parsec is running, make sure to save this file
+#   and restart Parsec immediately so your changes are preserved.
 
-    # Use scheduled task to launch parsec in current session for setting up login
-    Script 'ParsecRunning'
-    {
-        TestScript = {
-            (Get-Process -Name 'parsecd' -EA 'SilentlyContinue') -ne $null
-        }
-        GetScript = {
-            @{ Result = Get-Process -Name 'parsecd' -EA 'SilentlyContinue' }
-        }
-        SetScript = {
-            Start-ScheduledTask -TaskName $using:parsecScheduledTaskName
-            Start-Sleep -Seconds 5
-        }
-        DependsOn = '[ScheduledTask]ParsecAutorun'
+# Example:
+# encoder_bitrate = 10
+app_run_level = 1
+
+encoder_bitrate=50
+encoder_min_bitrate = 20
+#encoder_vbv_max = 500
+#encoder_min_qp=5
+
+server_audio_cancel=0
+network_server_start_port = 8000
+server_admin_mute = 0
+"@
+        DependsOn = '[ChocolateyPackage]Parsec'
     }
 }
