@@ -38,7 +38,7 @@ $packageArgs = @{
   checksumType64= 'sha256' #default is checksumType
 
   # MSI
-  silentArgs    = "/S" # ALLUSERS=1 DISABLEDESKTOPSHORTCUT=1 ADDDESKTOPICON=0 ADDSTARTMENU=0
+  silentArgs    = "/silent /shared /norun" # ALLUSERS=1 DISABLEDESKTOPSHORTCUT=1 ADDDESKTOPICON=0 ADDSTARTMENU=0
   validExitCodes= @(0)
   # OTHERS
   # Uncomment matching EXE type (sorted by most to least common)

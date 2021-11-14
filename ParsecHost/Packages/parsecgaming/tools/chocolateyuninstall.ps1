@@ -16,7 +16,7 @@ $packageArgs = @{
   softwareName  = 'Parsec'  #part or all of the Display Name as you see it in Programs and Features. It should be enough to be unique
   fileType      = 'exe' #only one of these: MSI or EXE (ignore MSU for now)
   # MSI
-  silentArgs    = "/S"
+  silentArgs    = "/silent"
   validExitCodes= @(0) # https://msdn.microsoft.com/en-us/library/aa376931(v=vs.85).aspx
   # OTHERS
   # Uncomment matching EXE type (sorted by most to least common)
