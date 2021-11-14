@@ -8,21 +8,6 @@ Configuration ParsecUser
 
     Import-DscResource -ModuleName 'PSDscResources'
 
-    # Local user account running parsec
-    User "Account-User-Parsec"
-    {
-        Ensure = 'Present'
-        UserName = $Credential.UserName
-        Password = $Credential
-    }
-    Group "Group-Admin-Parsec"
-    {
-        Ensure = 'Present'
-        GroupName = 'Administrators'
-        MembersToInclude = $Credential.UserName
-        DependsOn = '[User]Account-User-Parsec'
-    }
-
     # Parsec wallpaper
     $wallpaperPath = Join-Path $env:ProgramData 'ParsecHost\wallpaper.png'
     Script 'ParsecWallpaperFile'
@@ -46,7 +31,7 @@ Configuration ParsecUser
         ValueData = $wallpaperPath
         ValueType = 'String'
         Force = $true
-        DependsOn = '[Script]ParsecWallpaperFile','[Group]Group-Admin-Parsec'
+        DependsOn = '[Script]ParsecWallpaperFile'
         PsDscRunAsCredential = $Credential
     }
     Registry 'ParsecWallpaperFill'
@@ -57,7 +42,7 @@ Configuration ParsecUser
         ValueData = '10'
         ValueType = 'String'
         Force = $true
-        DependsOn = '[Registry]ParsecWallpaper','[Group]Group-Admin-Parsec'
+        DependsOn = '[Registry]ParsecWallpaper'
         PsDscRunAsCredential = $Credential
     }
 
@@ -70,7 +55,6 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
 
@@ -83,7 +67,6 @@ Configuration ParsecUser
         ValueData = 1
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     
@@ -96,7 +79,6 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
 
@@ -109,7 +91,6 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     Registry "Explorer-HideFrequentFolders"
@@ -120,7 +101,6 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     Registry "Explorer-LaunchToQuickAccess-Disabled"
@@ -131,7 +111,6 @@ Configuration ParsecUser
         ValueData = 1
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     Registry "Explorer-ShowHiddenItems"
@@ -142,7 +121,6 @@ Configuration ParsecUser
         ValueData = 1
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     Registry "Explorer-ShowFileExtensions"
@@ -153,7 +131,6 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     Registry "Explorer-HideTaskbarTaskView"
@@ -164,7 +141,6 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     Registry "Explorer-HideTaskbarSearch"
@@ -175,7 +151,6 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     Registry "Explorer-BestPerformanceVisuals"
@@ -186,7 +161,6 @@ Configuration ParsecUser
         ValueData = 2
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
 
@@ -199,7 +173,6 @@ Configuration ParsecUser
         ValueData = '506'
         ValueType = 'String'
         Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     Registry "OSKShortcutsDisabled"
@@ -210,7 +183,6 @@ Configuration ParsecUser
         ValueData = '122'
         ValueType = 'String'
         Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
     Registry "ToggleKeysShortcutsDisabled"
@@ -221,7 +193,6 @@ Configuration ParsecUser
         ValueData = '58'
         ValueType = 'String'
         Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
     }
 
@@ -234,81 +205,6 @@ Configuration ParsecUser
         ValueData = 0
         ValueType = 'Dword'
         Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
         PsDscRunAsCredential = $Credential
-    }
-
-    # Clear last logged on user
-    Registry "Clear-LastLoggedOnDisplayName"
-    {
-        Ensure = 'Absent'
-        Key = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Authentication\LogonUI'
-        ValueName = 'LastLoggedOnDisplayName'
-    }
-    Registry "Clear-LastLoggedOnSAMUser"
-    {
-        Ensure = 'Absent'
-        Key = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Authentication\LogonUI'
-        ValueName = 'LastLoggedOnSAMUser'
-    }
-    Registry "Clear-LastLoggedOnUser"
-    {
-        Ensure = 'Absent'
-        Key = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Authentication\LogonUI'
-        ValueName = 'LastLoggedOnUser'
-    }
-    Registry "Clear-LastLoggedOnUserSID"
-    {
-        Ensure = 'Absent'
-        Key = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Authentication\LogonUI'
-        ValueName = 'LastLoggedOnUserSID'
-    }
-    Registry "Clear-AutoLogonCount"
-    {
-        Ensure = 'Absent'
-        Key = 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon'
-        ValueName = 'AutoLogonCount'
-    }
-
-    # Configure autologon
-    Registry "AutoLogon-Enabled"
-    {
-        Ensure = 'Present'
-        Key = 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon'
-        ValueName = 'AutoAdminLogon'
-        ValueData = 1
-        ValueType = 'Dword'
-        Force = $true
-        DependsOn = '[User]Account-User-Parsec'
-    }
-    Registry "AutoLogon-Domain"
-    {
-        Ensure = 'Present'
-        Key = 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon'
-        ValueName = 'DefaultDomainName'
-        ValueData = '.'
-        ValueType = 'String'
-        Force = $true
-        DependsOn = '[User]Account-User-Parsec'
-    }
-    Registry "AutoLogon-Username"
-    {
-        Ensure = 'Present'
-        Key = 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon'
-        ValueName = 'DefaultUserName'
-        ValueData = $Credential.UserName
-        ValueType = 'String'
-        Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
-    }
-    Registry "AutoLogon-Password"
-    {
-        Ensure = 'Present'
-        Key = 'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Winlogon'
-        ValueName = 'DefaultPassword'
-        ValueData = $Credential.GetNetworkCredential().Password
-        ValueType = 'String'
-        Force = $true
-        DependsOn = '[Group]Group-Admin-Parsec'
     }
 }
