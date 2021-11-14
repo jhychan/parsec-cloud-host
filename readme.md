@@ -16,6 +16,7 @@ Cloud provider and GPU list:
    - Tesla M60
    - Tesla P4
    - Tesla T4
+   - Ampere A10
  - Google Cloud
    - Tesla P4
    - Tesla T4
@@ -53,9 +54,8 @@ Set-Location -Path $workingDir
 ```
 
 The script will proceed to configure the machine. You should be prompted for the following:
-* Early on: Username/password for the user account you want autologon configured for
-* Towards the end: message to login to Parsec before rebooting
-* Very end: reboot the machine
+* Login to Parsec after it has been installed
+* Reboot the machine after all provising tasks are complete
 
 # Progress Tracker
 The checklist below outlines the configuration applied by this module, and tracks configuration capabilities that are under development.
@@ -80,7 +80,7 @@ The checklist below outlines the configuration applied by this module, and track
  - [x] Switch to high performance power plan
 
 ## Windows User:
- - [x] Configure local user account with autologon
+ - [x] ~~Configure local user account with autologon~~
  - [x] Disable IE proxy settings
  - [x] Automatically close apps on shutdown
  - [x] Disable mouse acceleration
@@ -98,13 +98,14 @@ The checklist below outlines the configuration applied by this module, and track
  - [x] PowerShell modules
  	- [x] Chocolatey
  	- [x] PSDscResources
+  - [x] DeviceManagement
  - [x] General Software
  	- [x] 7zip
  	- [x] Google Chrome
  	- [x] Parsec
- 	   - [x] Parsec autostartup (as a scheduled task)
+ 	   - [x] ~~Parsec autostartup (as a scheduled task)~~
  	   - [x] User message to login and configure parsec
- 	   - [x] Symlink parsec config folder to the autologon account
+ 	   - [x] ~~Symlink parsec config folder to the autologon account~~
  	   - [x] Set default hosting port to start from 8000
  	- [x] Steam
 
@@ -113,9 +114,7 @@ The checklist below outlines the configuration applied by this module, and track
  - [x] VB-Cable
  	- [x] Windows audio services
  - [x] Nvidia GPU (needs testing)
- 	- [ ] Enable NVidia GPU
- 	- [ ] Disable all other GPUs
- 	- [ ] Allow only one monitor
- 	- [ ] Check GRID mode
+ 	- [x] Enable NVidia GPU (vGaming/Grid licensing)
+ 	- [x] Disable basic display adapters
  - [x] Unsupported GPUs
     - [x] Warn user about parsec compat and manual driver install

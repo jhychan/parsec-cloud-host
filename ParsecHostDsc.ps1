@@ -3,7 +3,7 @@ Configuration ParsecHostDsc
     Param(
         [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
-        [PSCredential]$ParsecUserCredential
+        [PSCredential]$UserCredential
     )
 
     Import-DscResource -ModuleName 'ParsecHost'
@@ -12,21 +12,13 @@ Configuration ParsecHostDsc
     {
         ParsecSystem 'System' {}
 
+        ParsecDrivers 'Drivers' {}
+
+        ParsecSoftware 'Software' {}
+
         ParsecUser 'User'
         {
-            Credential = $ParsecUserCredential
-            DependsOn = '[ParsecSystem]System'
-        }
-
-        ParsecSoftware 'Software'
-        {
-            Credential = $ParsecUserCredential
-            DependsOn = '[ParsecUser]User'
-        }
-
-        ParsecDrivers 'Drivers'
-        {
-            DependsOn = '[ParsecSoftware]Software'
+            Credential = $UserCredential
         }
     }
 }
