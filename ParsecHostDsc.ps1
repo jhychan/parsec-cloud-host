@@ -12,9 +12,9 @@ Configuration ParsecHostDsc
     {
         ParsecSystem 'System' {}
 
-        ParsecDrivers 'Drivers' {}
-
         ParsecSoftware 'Software' {}
+
+        ParsecDrivers 'Drivers' {}
 
         ParsecUser 'User'
         {
