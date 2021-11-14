@@ -116,16 +116,19 @@ Configuration ParsecDrivers
     }
 
     # Disable Microsoft Basic Display Adapter
-    Script 'DisableBasicDisplay' {
-        TestScript = {
-            $basicDisplay = Get-Device -DeviceClass GUID_DEVCLASS_DISPLAY | Where-Object Service -eq 'BasicDisplay'
-            return ($basicDisplay.ConfigurationFlags -eq 'CONFIGFLAG_DISABLED')
-        }
-        GetScript = {
-            @{ Result = Get-Device -DeviceClass GUID_DEVCLASS_DISPLAY | Where-Object Service -eq 'BasicDisplay' }
-        }
-        SetScript = {
-            Get-Device -DeviceClass GUID_DEVCLASS_DISPLAY | Where-Object Service -eq 'BasicDisplay' | Disable-Device
+    $basicDisplay = Get-Device -DeviceClass GUID_DEVCLASS_DISPLAY | Where-Object Service -eq 'BasicDisplay'
+    If ($basicDisplay) {
+        Script 'DisableBasicDisplay' {
+            TestScript = {
+                $basicDisplay = Get-Device -DeviceClass GUID_DEVCLASS_DISPLAY | Where-Object Service -eq 'BasicDisplay'
+                return ($basicDisplay.ConfigurationFlags -eq 'CONFIGFLAG_DISABLED')
+            }
+            GetScript = {
+                @{ Result = Get-Device -DeviceClass GUID_DEVCLASS_DISPLAY | Where-Object Service -eq 'BasicDisplay' }
+            }
+            SetScript = {
+                Get-Device -DeviceClass GUID_DEVCLASS_DISPLAY | Where-Object Service -eq 'BasicDisplay' | Disable-Device
+            }
         }
     }
 }
