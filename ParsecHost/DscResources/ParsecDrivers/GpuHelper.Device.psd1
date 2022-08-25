@@ -8,6 +8,12 @@
         '1EB8' = @{ Name = 'Tesla T4';      PSID = 110;  PFID = 883;  NVGrid = $true;  }
         '1BB1' = @{ Name = 'Quadro P4000';  PSID = 73;   PFID = 840;  NVGrid = $false; }
         '1BB0' = @{ Name = 'Quadro P5000';  PSID = 73;   PFID = 823;  NVGrid = $false; }
-        '2237' = @{ Name = 'A10G';          PSI = 118;   PFID = 955;  NVGrid = $true; }
+        '2237' = @{ Name = 'A10G';          PSID = 118;  PFID = 955;  NVGrid = $true; }
     }
+    '1002' = @{
+        '7362' = @{ Name = 'Radeon Pro V520' }
+    }
+    # '80EE' = @{
+    #     'BEEF' = @{ Name = 'VirtualBox';    PSID = 110;  PFID = 883;  NVGrid = $true   }
+    # }
 }

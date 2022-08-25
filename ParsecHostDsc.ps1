@@ -14,7 +14,10 @@ Configuration ParsecHostDsc
 
         ParsecSoftware 'Software' {}
 
-        ParsecDrivers 'Drivers' {}
+        ParsecDrivers 'Drivers'
+        {
+            DependsOn = '[ParsecSoftware]Software'
+        }
 
         ParsecUser 'User'
         {

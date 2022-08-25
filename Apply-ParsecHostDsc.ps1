@@ -39,8 +39,8 @@ Set-DscLocalConfigurationManager -Path $lcmPath -Force
 
 # prompts for the local user account/profile that will hosting parsec sessions
 If ($global:userCredential -isnot [PSCredential]) {
-    'Currently logged in as {0} - please provide logon credentials for DSC to configure user settings' -f $env:USERNAME | Write-Host -ForegroundColor 'Green'
-    $global:userCredential = Get-Credential -UserName $env:USERNAME -Message 'Please enter your credentials'
+    'Creating new windows account for logging on (if account exists password will be overwritten)' | Write-Host -ForegroundColor 'Green'
+    $global:userCredential = Get-Credential -UserName 'parsec' -Message 'Please enter a new password'
 } Else {
     'Using previously provided user account {0} for configuring user settings' -f $global:userCredential.UserName | Write-Host -ForegroundColor 'Green'
 }
@@ -54,6 +54,7 @@ ParsecHostDsc -ConfigurationData $configData -OutputPath $dscPath -UserCredentia
 Start-DscConfiguration -Path $dscPath -Force -Wait
 
 # Prompt user to login to parsec (should already be running)
+Start-Process
 'Start parsec, log in, configure settings and make sure hosting is enabled.' | Write-Host -ForegroundColor 'Green'
 Read-Host -Prompt 'Hit [enter] to continue...' | Out-Null
 

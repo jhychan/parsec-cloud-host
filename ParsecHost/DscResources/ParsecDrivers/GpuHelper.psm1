@@ -87,13 +87,43 @@ Function Download-GpuDriver {
                     $LocalFilePath = Join-Path $env:Temp $LocalFileName
                     Copy-S3Object -BucketName $Bucket -Key $Object.Key -LocalFile $LocalFilePath -Region 'us-east-1' | Out-Null
                     $file = Get-Item $LocalFilePath
-                    If($file.Extension -eq '.zip') {
+                    If ($file.Extension -eq '.zip') {
                         $extractionPath = Join-Path $env:Temp $file.BaseName
                         Remove-Item -Recurse -Force -Path $extractionPath -EA 'SilentlyContinue'
                         $file | Expand-Archive -DestinationPath $extractionPath -Force | Out-Null
                         Remove-Item $file -EA 'SilentlyContinue'
                         $installer = Get-ChildItem -Recurse -Path $extractionPath | ? { $_.Extension -eq '.exe' -and $_.Name -like '*win10*' }
                         return $installer.FullName
+                    }
+                }
+            }
+        }
+        'AWS-A' {
+            try {
+                Set-AWSCredential -ProfileName 'parsecAWSCreds'
+            }
+            catch {
+                $awsCredentials = Get-Credential -Message 'Please provide your AWS Access key and secret key'
+                Set-AWSCredential -AccessKey $awsCredentials.UserName -SecretKey $awsCredentials.GetNetworkCredential().Password -StoreAs 'parsecAWSCreds'
+                Set-AWSCredential -ProfileName 'parsecAWSCreds'
+            }
+            $Bucket = "ec2-amd-windows-drivers"
+            $KeyPrefix = "latest"
+            $Objects = Get-S3Object -BucketName $Bucket -KeyPrefix $KeyPrefix -Region 'us-east-1'
+            ForEach ($Object in $Objects) {
+                $LocalFileName = $Object.Key
+                If ($LocalFileName -ne '' -and $Object.Size -ne 0) {
+                    $LocalFilePath = Join-Path $env:Temp $LocalFileName
+                    Copy-S3Object -BucketName $Bucket -Key $Object.Key -LocalFile $LocalFilePath -Region 'us-east-1' | Out-Null
+                    $file = Get-Item $LocalFilePath
+                    If ($file.Extension -eq '.zip') {
+                        $extractionPath = Join-Path $env:Temp $file.BaseName
+                        Remove-Item -Recurse -Force -Path $extractionPath -EA 'SilentlyContinue'
+                        $file | Expand-Archive -DestinationPath $extractionPath -Force | Out-Null
+                        Remove-Item $file -EA 'SilentlyContinue'
+                        $drivers = Get-ChildItem -Recurse -Path $extractionPath | ? { $_.FullName -like '*\WT6A_INF\*.inf' }
+                        # $drivers | % { pnputil /add-driver $_.FullName /install }
+                        return $drivers.FullName
                     }
                 }
             }
